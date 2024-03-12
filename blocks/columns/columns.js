@@ -1,5 +1,7 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-new */
 import {
-  loadScript
+  loadScript,
 } from '../../scripts/aem.js';
 
 export default function decorate(block) {
@@ -28,41 +30,41 @@ export default function decorate(block) {
               label: 'Professionals',
               data: [569, 467, 207, 195, 145, 143],
               borderColor: '#0FB5AE',
-              backgroundColor: '#4046CA'
+              backgroundColor: '#4046CA',
             }, {
               type: 'bar',
               label: 'Related Job posts',
               data: [6374, 6413, 2918, 4118, 1966],
               borderColor: 'rgb(255, 99, 132)',
-              backgroundColor: 'rgba(255, 32, 45, 0.2)'
+              backgroundColor: 'rgba(255, 32, 45, 0.2)',
             }, {
               type: 'line',
               label: '1y growth',
               data: [6374, 6413, 2918, 4118, 1966],
               fill: false,
-              borderColor: 'rgb(54, 162, 235)'
-            }]
+              borderColor: 'rgb(54, 162, 235)',
+            }],
           },
           options: {
             plugins: {
               legend: {
-                position: 'bottom'
-              }
+                position: 'bottom',
+              },
             },
             scales: {
               minRotation: 90,
               y: {
-                beginAtZero: true
-              }
-            }
-          }
+                beginAtZero: true,
+              },
+            },
+          },
         });
         col.innerHTML = '';
         container.append(canvas);
         col.append(container);
       });
     });
-  }
+  };
 
   loadChart();
 }
