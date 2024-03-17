@@ -1,8 +1,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-new */
-import {
-  loadScript,
-} from '../../scripts/aem.js';
+import { loadScript } from '../../scripts/aem.js';
+import ExcelSheetConverter from '../../scripts/excel-to-json-helper.js';
 
 async function loadChart() {
   if (!window.Chart) {
@@ -207,6 +206,19 @@ async function loapMap(col) {
 export default function decorate(block) {
   const cols = [...block.firstElementChild.children];
   let res = {};
+
+  // load excel data
+  const converter = new ExcelSheetConverter('/scripts/TI-Dashboard-Template.xlsx');
+  converter.convertToJSON()
+    .then(() => {
+      const jsonData = converter.results;
+      console.log('Excel sheet converted to JSON:', jsonData);
+      // Do something with the JSON data
+    })
+    .catch((error) => {
+      console.error('Error converting Excel sheet to JSON:', error);
+    });
+
   block.classList.add(`columns-${cols.length}-cols`);
   // setup image columns
   [...block.children].forEach((row, rindex) => {
