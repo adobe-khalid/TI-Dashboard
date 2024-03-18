@@ -1,54 +1,53 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable no-undef */
 import { loadScript } from './aem.js';
 
-class ExcelSheetConverter {
+export default class ExcelDataLoader {
   constructor(excelUrl) {
     this.excelUrl = excelUrl;
-    this.resultJson = null;
+    this.jsonData = null;
   }
 
-  async convertToJSON() {
+  async loadExcelData() {
     await loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js');
-    return new Promise((resolve, reject) => {
-      fetch(this.excelUrl, {
-        headers: {
-          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        },
-      }).then((response) => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch Excel file');
-        }
-        return response.blob();
-      }).then((blob) => {
-        const fileReader = new FileReader();
-        fileReader.onload = () => {
-          const binaryString = fileReader.result;
-          const workbook = XLSX.read(binaryString, {
-            type: 'binary',
-          });
-          const jsonData = {};
-          workbook.SheetNames.forEach((sheetName) => {
-            const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-            jsonData[sheetName] = sheetData;
-          });
-          this.resultJson = jsonData; // Set the results
-          resolve(jsonData);
-        };
-        fileReader.readAsBinaryString(blob);
-      }).catch((error) => {
-        console.error('Error fetching or converting Excel file:', error);
-        reject(error);
-      });
+
+    const response = await fetch(this.excelUrl, {
+      headers: {
+        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch Excel file');
+    }
+
+    const blob = await response.blob();
+    const fileReader = new FileReader();
+
+    return new Promise((resolve) => {
+      fileReader.onload = () => {
+        const binaryString = fileReader.result;
+        const workbook = XLSX.read(binaryString, { type: 'binary' });
+        const result = {};
+
+        workbook.SheetNames.forEach((sheetName) => {
+          const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+          result[sheetName] = sheetData;
+        });
+
+        this.jsonData = result;
+        resolve(result);
+      };
+
+      fileReader.readAsBinaryString(blob);
     });
   }
 
-  get results() {
-    return this.resultJson;
+  get data() {
+    return this.jsonData;
   }
 
-  set results(data) {
-    this.resultJson = data;
+  set data(data) {
+    this.jsonData = data;
   }
 }
-
-export default ExcelSheetConverter;
