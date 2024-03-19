@@ -3,7 +3,7 @@
 /* eslint-disable no-undef */
 import { loadScript } from './aem.js';
 
-class MapLoader {
+export default class MapLoader {
   constructor(apiKey) {
     this.apiKey = apiKey;
   }
@@ -157,5 +157,3 @@ class MapLoader {
     this.initMap();
   }
 }
-
-export default MapLoader;

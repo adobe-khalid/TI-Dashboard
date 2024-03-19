@@ -13,7 +13,7 @@ export default class ExcelDataLoader {
 
     const response = await fetch(this.excelUrl, {
       headers: {
-        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       },
     });
 
