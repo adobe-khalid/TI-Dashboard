@@ -32,7 +32,45 @@ export default async function decorate(block) {
 
     let res = {};
     const cities = ['Bristol', 'Ruhr Region', 'Hamburg', 'Leeds', 'Geneva', 'Valencia', 'Bordeaux'];
-    res = await chartLoader.loadChart(excelJson['EMEA 5-10years'].slice(0, 6));
+    const chartData = excelJson['EMEA 5-10years'].slice(0, 5);
+    res = await chartLoader.loadChart({
+      type: 'scatter',
+      data: {
+        labels: chartData.map((v) => v.Location),
+        datasets: [{
+          type: 'bar',
+          label: 'Professionals',
+          data: chartData.map((v) => v.Professionals),
+          borderColor: '#0FB5AE',
+          backgroundColor: '#4046CA',
+        }, {
+          type: 'bar',
+          label: 'Related Job posts',
+          data: chartData.map((v) => v['Related Job posts']),
+          borderColor: 'rgb(255, 99, 132)',
+          backgroundColor: 'rgba(255, 32, 45, 0.2)',
+        }, {
+          type: 'line',
+          label: '1y growth',
+          data: chartData.map((v) => v['1y growth'] * 1000),
+          fill: false,
+          borderColor: 'rgb(54, 162, 235)',
+        }],
+      },
+      options: {
+        plugins: {
+          legend: {
+            position: 'bottom',
+          },
+        },
+        scales: {
+          minRotation: 90,
+          y: {
+            beginAtZero: true,
+          },
+        },
+      },
+    });
     block.innerHTML = '';
     block.appendChild(res);
     await mapLoader.loadMap(block, 'retainMap', cities);
