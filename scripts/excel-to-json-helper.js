@@ -1,53 +1,49 @@
-/* eslint-disable class-methods-use-this */
 /* eslint-disable no-undef */
 import { loadScript } from './aem.js';
 
-export default class ExcelDataLoader {
-  constructor(excelUrl) {
-    this.excelUrl = excelUrl;
-    this.jsonData = null;
+const cachedData = []; // Variable to cache the fetched Excel data
+
+async function ExcelDataLoader(excelUrl) {
+  const urlExist = cachedData.filter((v) => (v.excelUrl === excelUrl));
+  if (urlExist.length && urlExist[0].excelUrl) {
+    return urlExist[0].jsonData; // Return the cached data if available
   }
 
-  async loadExcelData() {
-    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js');
+  await loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js');
 
-    const response = await fetch(this.excelUrl, {
+  try {
+    // Fetch Excel data from the URL
+    const response = await fetch(excelUrl, {
       headers: {
-        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       },
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch Excel file');
-    }
-
     const blob = await response.blob();
     const fileReader = new FileReader();
-
-    return new Promise((resolve) => {
+    const dataPromise = new Promise((resolve, reject) => {
       fileReader.onload = () => {
         const binaryString = fileReader.result;
         const workbook = XLSX.read(binaryString, { type: 'binary' });
-        const result = {};
 
+        const data = {};
         workbook.SheetNames.forEach((sheetName) => {
-          const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-          result[sheetName] = sheetData;
+          const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+          data[sheetName] = jsonData;
         });
 
-        this.jsonData = result;
-        resolve(result);
+        cachedData.push({ excelUrl, jsonData: data }); // Cache the fetched data
+        resolve(data);
       };
 
+      fileReader.onerror = reject;
       fileReader.readAsBinaryString(blob);
     });
-  }
 
-  get data() {
-    return this.jsonData;
-  }
-
-  set data(data) {
-    this.jsonData = data;
+    return dataPromise;
+  } catch (error) {
+    throw new Error(`Error fetching or parsing Excel data: ${error.message}`);
   }
 }
+
+export default ExcelDataLoader;

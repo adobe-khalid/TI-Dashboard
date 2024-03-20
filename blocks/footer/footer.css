@@ -2,10 +2,10 @@ footer {
   padding: 2rem;
   background-color: var(--light-color);
   font-size: var(--body-font-size-s);
+  border-top: 1px solid var(--dark-color);
 }
 
 footer .footer {
-  max-width: 1200px;
   margin: auto;
 }
 

@@ -4,7 +4,7 @@ import ExcelDataLoader from '../../scripts/excel-to-json-helper.js';
 import MapLoader from '../../scripts/map-helper.js';
 import ChartLoader from '../../scripts/chart-helper.js';
 
-export default function decorate(block) {
+export default async function decorate(block) {
   const authorData = {};
   const recruit = block.classList.contains('recruit');
   const retain = block.classList.contains('retain');
@@ -27,23 +27,25 @@ export default function decorate(block) {
   console.log('authorData', authorData);
 
   if (recruit) {
-    const excelDataLoader = new ExcelDataLoader('/scripts/TI-Dashboard-Template.xlsx');
-    const mapLoader = new MapLoader('AIzaSyBz3r5qBJ3f7UiT28LKYJT4sjcORCVIQiw');
-    const chartLoader = new ChartLoader();
+    try {
+      const excelJson = await ExcelDataLoader('/scripts/TI-Dashboard-Template.xlsx');
+      const mapLoader = new MapLoader('AIzaSyBz3r5qBJ3f7UiT28LKYJT4sjcORCVIQiw');
+      const chartLoader = new ChartLoader();
 
-    excelDataLoader.loadExcelData()
-      .then(async (data) => {
-        let res = {};
-        console.log('Results are already available:', data);
-        res = await chartLoader.loadChart(data['Tab_EMEA_5-10years'].slice(0, 6));
-        block.innerHTML = '';
-        block.appendChild(res);
-        mapLoader.loadMap(block);
-      })
-      .catch((error) => console.error('Error fetching or converting Excel file:', error));
+      console.log('Excel Data from script1:', excelJson);
+
+      let res = {};
+      const cities = ['Madrid', 'Warsaw', 'Copenhagen metropolitan area', 'Frankfurt Rhine-Main', 'Stockholm'];
+      res = await chartLoader.loadChart(excelJson['EMEA 5-10years'].slice(0, 6));
+      block.innerHTML = '';
+      block.appendChild(res);
+      await mapLoader.loadMap(block, 'recruitMap', cities);
+    } catch (error) {
+      console.error('Error fetching Excel data in script1:', error);
+    }
   } else if (retain) {
-    // retain container code here
+    // retain
   } else if (reskill) {
-    // retain container code here
+    // reskill
   }
 }

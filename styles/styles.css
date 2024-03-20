@@ -15,9 +15,10 @@
   --link-color: #035fe6;
   --link-hover-color: #136ff6;
   --background-color: white;
-  --light-color: #eee;
+  --light-color: #F8F8F8;
   --dark-color: #ccc;
   --text-color: black;
+  --red-color: #F91101;
 
   /* fonts */
   --body-font-family: roboto, roboto-fallback;
@@ -25,9 +26,11 @@
   --fixed-font-family: 'Roboto Mono', menlo, consolas, 'Liberation Mono', monospace;
 
   /* body sizes */
-  --body-font-size-m: 22px;
-  --body-font-size-s: 18px;
-  --body-font-size-xs: 16px;
+  --body-font-size-xl: 22px;
+  --body-font-size-l: 20px;
+  --body-font-size-m: 16px;
+  --body-font-size-s: 14px;
+  --body-font-size-xs: 12px;
 
   /* heading sizes */
   --heading-font-size-xxl: 48px;
@@ -198,7 +201,6 @@ main .section {
 
 @media (width >= 900px) {
   .section > div {
-    max-width: 1200px;
     margin: auto;
   }
 }
@@ -207,4 +209,30 @@ main .section {
 main .section.light,
 main .section.highlight {
   background-color: var(--light-color);
+}
+
+main .dashboard {
+	width: 100%;
+	box-sizing: border-box;
+  padding: 18px;
+  background-color: var(--light-color);
+}
+
+.dashboard > div {
+	width: 100%;
+}
+
+@media (width >= 900px) {
+  main .dashboard {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 18px 34px;
+    background-color: var(--light-color);
+  }
+  .dashboard > div {
+    margin: 0;
+    flex: 1 1 33.33%;
+    width: 33.33%;
+  }
 }

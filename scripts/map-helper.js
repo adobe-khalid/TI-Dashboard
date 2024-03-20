@@ -6,13 +6,12 @@ import { loadScript } from './aem.js';
 export default class MapLoader {
   constructor(apiKey) {
     this.apiKey = apiKey;
+    this.mapLoadedPromise = null;
   }
 
-  async initMap() {
-    // Create an array of city names
-    const cities = ['\xcele-de-France', 'Bergen Region', 'Randstad', 'Republic of Ireland', 'Z\xfcrich', 'Madrid', '\xc0rea Metropolitana de Barcelona', 'Warsaw', 'Copenhagen metropolitan area', 'Frankfurt Rhine-Main', 'Stockholm', 'Stuttgart', 'Milan', 'Toulouse M\xe9tropole', 'Brussels', 'Cambridge', 'Lausanne', 'Brabantine City', 'Rhine-Neckar', 'Lyon', 'Cologne', 'Romania', 'Alexandria metropolitan area, Louisiana', 'T\xfcbingen', 'Edinburgh', 'Cracow, Queensland', 'Aachen', 'Oxford', 'Manchester', 'Bristol', 'Ruhr Region', 'Hamburg', 'Leeds', 'Geneva', 'Valencia', 'Bordeaux', 'G\xf6ttingen', 'D\xfcsseldorf', 'Saarland', 'Lille', 'Armenia', 'Basel', 'Kaiserslautern', 'Marseille\xcele-de-France', 'London'];
+  async initMap(mapELeId, cities) {
     // The map, centered at the first city
-    const map = new google.maps.Map(document.getElementById('map'), {
+    const map = new google.maps.Map(document.getElementById(mapELeId), {
       zoom: 4,
       center: {
         lat: 37.0902,
@@ -146,14 +145,26 @@ export default class MapLoader {
     });
   }
 
-  async loadMap(col) {
-    if (typeof google === 'undefined') {
-      await loadScript(`https://maps.googleapis.com/maps/api/js?key=${this.apiKey}`);
+  async loadMap(col, mapELeId, cities) {
+    if (!this.mapLoadedPromise) {
+      // Load the Google Maps API script only once
+      this.mapLoadedPromise = loadScript(`https://maps.googleapis.com/maps/api/js?key=${this.apiKey}`);
     }
+
+    try {
+      // Ensure that subsequent calls wait for the script to be loaded
+      await this.mapLoadedPromise;
+      console.log('map successfully loaded - ', mapELeId);
+    } catch (error) {
+      console.error('Error loading Google Maps API:', error);
+      return; // Exit if there was an error loading the script
+    }
+
+    // Once the script is loaded, initialize the map
     const container = document.createElement('div');
-    container.setAttribute('id', 'map');
+    container.setAttribute('id', mapELeId);
     container.style.height = '420px';
     col.appendChild(container);
-    this.initMap();
+    this.initMap(mapELeId, cities);
   }
 }
