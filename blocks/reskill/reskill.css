@@ -1,16 +1,3 @@
-.ti-dashboard-container {
-	display: flex;
-	flex-direction: row;
-	width: 100%;
-	box-sizing: border-box;
-}
-
-.ti-dashboard-container > .ti-dashboard-wrapper {
-	max-width: none;
-	margin: 0;
-	flex: 1;
-}
-
-.ti-dashboard {
-	border: 1px solid #ccc;
+.reskill {
+	padding: 16px 0px 32px 16px;
 }

@@ -229,7 +229,7 @@ main .dashboard {
     display: flex;
     flex-direction: row;
     width: 100%;
-    padding: 18px 34px;
+    padding: 0 34px;
     background-color: var(--light-color);
   }
   .dashboard > div {
