@@ -1,3 +1,9 @@
 .reskill {
-	padding: 16px 0px 32px 16px;
+	padding: 16px 0px 32px 0;
+}
+
+@media (width >=900px) {
+	.reskill {
+		padding: 16px 0px 32px 16px;
+	}	
 }

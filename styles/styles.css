@@ -301,9 +301,7 @@ main .dashboard {
   height: 20px;
   text-align: center;
 }
-
 /* End - Dashboard title */
-
 
 /* Start - Dashboard Section */
 .dashboard__section {
@@ -314,9 +312,7 @@ main .dashboard {
 }
 
 .dashboard__section-one {
-  height: 300px;
   margin-bottom: 16px;
-  max-height: 300px;
 }
 
 .dashboard__section-heading {
@@ -325,4 +321,14 @@ main .dashboard {
   margin-bottom: 16px;
 }
 
-/* End - Dashboard *
+@media (width >=900px) {
+  .dashboard__section-one {
+    height: 300px;
+    max-height: 300px;
+  }
+}
+/* End - Dashboard */
+
+.chart-container {
+  height: 100%;
+}
