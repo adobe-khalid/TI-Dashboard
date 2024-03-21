@@ -2,3 +2,143 @@
 	padding: 16px 16px 32px 16px;
 	background-color: #EDEDED;
 }
+.retain-container{
+	display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.metrics-item {
+	display: flex;
+    flex-wrap: wrap;
+}
+.metrics-item-value {
+	width: 100%;
+}
+.metrics {
+    border: #D5D5D5 solid 2px;
+    padding: 8px 16px 8px 12px;
+    margin: 8px;
+    border-radius: 16px;
+    font-size: 12px;
+    letter-spacing: 0;
+    color: #000000;
+    cursor: pointer;
+    line-height: 15px;
+}
+.metrics.selected {
+    background: #0165DC;
+	color: #ffffff;
+}
+.metrics.selected:after {
+    padding-left: 8px;
+    content: "\00d7";
+    font-size: 14px;
+}
+
+.table-container {
+	display: table;
+	border-collapse: collapse;
+	width: 100%;
+}
+.table-row {
+	display: table-row;
+}
+.table-row:first-child {
+	background: #D5D5D5;
+
+}
+.table-cell {
+	border-bottom: 1px solid #D5D5D5;
+    border-right: 1px solid #D5D5D5;
+	display: table-cell;
+	padding: 8px;
+	width: 50%;
+}
+.table-cell:last-child {
+	border-right: 0px;
+}
+
+.ai-product, .attrition-container, .skills-container, .location-container {
+	display: block;
+    background: #ffffff;
+    padding: 16px;
+    border: 1px #D5D5D5 solid;
+    border-radius: 16px;
+}
+.product__container-item {
+	display: flex;
+}
+.product__container-item .logo {
+	min-height: 44px;
+    min-width: 44px;
+    max-width: 48px;
+    border: 2px #D5D5D5 solid;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 4px 0;
+}
+.product__container-item .logo img {
+	max-width: 32px;
+    max-height: 32px;
+}
+
+.product__container-item .products {
+	display: flex;
+    align-items: center;
+}
+
+.product__container-item .products p {
+	padding: 8px;
+    margin: 0 8px;
+    background: #F8F8F8;
+}
+.attrition-container .product__container {
+	display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+	padding: 16px 74px;
+}
+.attrition-container .product__container-item {
+	flex-direction: column;
+    align-items: center;
+	margin: 16px 14px;
+}
+.attrition-container .product__container-item:first-child {
+	width: 100%;
+}
+.attrition-container .product__container-item .products p {
+	padding: 0;
+    margin: 0;
+	background: transparent;
+	color: #222222;
+}
+
+.filter-container {
+	display: flex;
+    align-items: center;
+    justify-content: left;
+}
+.filter-container span {
+	padding: 6px 10px;
+    border: 2px solid #D5D5D5;
+	font-size: 12px;
+    letter-spacing: 0;
+    color: #000000;
+    cursor: pointer;
+    line-height: 15px;
+}
+.filter-container span:first-child {
+	border-radius: 16px 0 0 16px;
+	border-right: 0px;
+}
+.filter-container span:last-child {
+	border-radius: 0px 16px 16px 0;
+	border-left: 0px;
+}
+
+.filter-container span.active {
+	background: #0265DC;
+	color: #ffffff;
+}
