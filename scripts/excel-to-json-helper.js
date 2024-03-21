@@ -15,7 +15,7 @@ async function ExcelDataLoader(excelUrl) {
     // Fetch Excel data from the URL
     const response = await fetch(excelUrl, {
       headers: {
-        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       },
     });
 

@@ -1,3 +1,35 @@
 .recruit {
 	padding:16px 16px 32px 0;
 }
+
+.recruit__title {
+	margin-bottom: 16px;
+	font-size: var(--body-font-size-xl);
+}
+
+.recruit__section-top {
+	background-color: var(--background-color);
+	border: 1px solid var(--border-color);
+	border-radius: 16px;
+    height: 300px;
+	margin-bottom: 16px;
+	max-height: 300px;
+	padding: 16px;
+}
+
+.recruit__section-top-heading {
+	font-size: var(--body-font-size-s);
+	margin-bottom: 16px;
+}
+
+.recruit__section-bottom {
+	background-color: var(--background-color);
+	border: 1px solid var(--border-color);
+	border-radius: 16px;
+	padding: 16px;
+}
+
+.recruit__section-bottom-heading {
+	font-size: var(--body-font-size-s);
+	margin-bottom: 16px;
+}

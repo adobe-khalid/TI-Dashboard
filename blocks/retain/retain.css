@@ -2,3 +2,35 @@
 	padding: 16px 16px 32px 16px;
 	background-color: #EDEDED;
 }
+
+.retain__title {
+	margin-bottom: 16px;
+	font-size: var(--body-font-size-xl);
+}
+
+.retain__section-top {
+	background-color: var(--background-color);
+	border: 1px solid var(--border-color);
+	border-radius: 16px;
+    height: 300px;
+	margin-bottom: 16px;
+	max-height: 300px;
+	padding: 16px;
+}
+
+.retain__section-top-heading {
+	font-size: var(--body-font-size-s);
+	margin-bottom: 16px;
+}
+
+.retain__section-bottom {
+	background-color: var(--background-color);
+	border: 1px solid var(--border-color);
+	border-radius: 16px;
+	padding: 16px;
+}
+
+.retain__section-bottom-heading {
+	font-size: var(--body-font-size-s);
+	margin-bottom: 16px;
+}

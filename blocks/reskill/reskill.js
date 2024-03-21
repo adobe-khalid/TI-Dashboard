@@ -67,7 +67,21 @@ function getLineChart(data, geo) {
 }
 
 export default async function decorate(block) {
+  const parentClass = 'reskill';
   const authorData = {};
+  const titleEle = document.createElement('div');
+  titleEle.append('Reskill');
+  titleEle.className = `${parentClass}__title`;
+  const sectionTop = document.createElement('div');
+  sectionTop.className = `${parentClass}__section-top`;
+  const sectionTopHeading = document.createElement('div');
+  sectionTopHeading.append('Emerging Skills Based on Github');
+  sectionTopHeading.className = `${parentClass}__section-top-heading`;
+  const sectionBottom = document.createElement('div');
+  sectionBottom.className = `${parentClass}__section-bottom`;
+  const sectionBottomHeading = document.createElement('div');
+  sectionBottomHeading.append('Startup Overview');
+  sectionBottomHeading.className = `${parentClass}__section-bottom-heading`;
 
   // iterate over children and get all authoring data
   block.childNodes.forEach((child) => {
@@ -97,8 +111,10 @@ export default async function decorate(block) {
     const chartData = excelJson['Gen AI Emerging skills 2024'];
     res = await chartLoader.loadChart(getLineChart(chartData, 'EMEA'));
     block.innerHTML = '';
-    block.appendChild(res);
-    await mapLoader.loadMap(block, 'reskillMap', cities);
+    sectionTop.append(sectionTopHeading, res);
+    sectionBottom.append(sectionBottomHeading);
+    block.append(titleEle, sectionTop, sectionBottom);
+    await mapLoader.loadMap(sectionBottom, 'reskillMap', cities);
   } catch (error) {
     console.error('Error fetching Excel data in script1:', error);
   }
