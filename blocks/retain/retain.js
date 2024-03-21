@@ -3,7 +3,7 @@
 import ExcelDataLoader from '../../scripts/excel-to-json-helper.js';
 import MapLoader from '../../scripts/map-helper.js';
 import ChartLoader from '../../scripts/chart-helper.js';
-import { printTitleTemplate } from '../../scripts/dashboard-template.js';
+import { printTitleTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
 
 export default async function decorate(block) {
   const parentClass = 'retain';
@@ -32,17 +32,22 @@ export default async function decorate(block) {
       authorData[firstDivText] = secondDivText;
     }
   });
+  console.log('authorData', authorData);
 
   block.innerHTML = '';
   // print title
-  printTitleTemplate(authorData, 'retain', block);
-
-  console.log('authorData', authorData);
+  printTitleTemplate(authorData, block);
+  // print section one
+  printSectionTemplate({ title: authorData['title-pool-skill'] }, block, true);
+  // print section two
+  printSectionTemplate({ title: authorData['title-pool-location'] }, block, false);
 
   try {
     const excelJson = await ExcelDataLoader('/scripts/TI-Dashboard-Template.xlsx');
     const mapLoader = new MapLoader('AIzaSyBz3r5qBJ3f7UiT28LKYJT4sjcORCVIQiw');
     const chartLoader = new ChartLoader();
+    const sectionOneEle = document.querySelector(`.${parentClass} .dashboard__section-one`);
+    const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard__section-two`);
 
     console.log('Excel Data from script1:', excelJson);
 
@@ -87,11 +92,8 @@ export default async function decorate(block) {
         },
       },
     });
-    block.innerHTML = '';
-    sectionTop.append(sectionTopHeading, res);
-    sectionBottom.append(sectionBottomHeading);
-    block.append(sectionTop, sectionBottom);
-    await mapLoader.loadMap(sectionBottom, 'retainMap', cities);
+    sectionOneEle.append(res);
+    await mapLoader.loadMap(sectionTwoEle, 'retainMap', cities);
   } catch (error) {
     console.error('Error fetching Excel data in script1:', error);
   }

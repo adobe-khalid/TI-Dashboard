@@ -1,6 +1,6 @@
-function printTitleTemplate(dataObj, selector, bindOnElement) {
+function printTitleTemplate(dataObj, bindOnElement) {
   const config = dataObj || {};
-  const parentClass = `${selector}__title`;
+  const parentClass = 'dashboard__title';
   const parentEle = document.createElement('div');
 
   parentEle.className = parentClass;
@@ -31,11 +31,40 @@ function printTitleTemplate(dataObj, selector, bindOnElement) {
   }
 }
 
-function printFilterTabsTemplate(dataObj) {
-  //printFilterTabsTemplate
+function printFilterTabsTemplate(leftFilter, rightFilter, bindOnElement) {
+  if (leftFilter) {
+    // left tab filter html
+  }
+
+  if (rightFilter) {
+    // left tab filter html
+  }
+
+  if (bindOnElement) {
+    // append all above created elements to bindOnElement
+  }
+}
+
+function printSectionTemplate(dataObj, bindOnElement, firstSection = true) {
+  const parentClass = 'dashboard__section';
+  const selectorClass = firstSection ? 'dashboard__section-one' : 'dashboard__section-two';
+  const parentEle = document.createElement('div');
+  parentEle.className = `${parentClass} ${selectorClass}`;
+
+  if (dataObj.title) {
+    const titleEle = document.createElement('div');
+    titleEle.className = `${parentClass}-heading`;
+    titleEle.append(dataObj.title);
+    parentEle.appendChild(titleEle);
+  }
+
+  if (bindOnElement) {
+    bindOnElement.appendChild(parentEle);
+  }
 }
 
 export {
   printTitleTemplate,
   printFilterTabsTemplate,
+  printSectionTemplate,
 };
