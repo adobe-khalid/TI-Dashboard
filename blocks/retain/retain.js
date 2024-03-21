@@ -3,13 +3,11 @@
 import ExcelDataLoader from '../../scripts/excel-to-json-helper.js';
 import MapLoader from '../../scripts/map-helper.js';
 import ChartLoader from '../../scripts/chart-helper.js';
+import { printTitleTemplate } from '../../scripts/dashboard-template.js';
 
 export default async function decorate(block) {
   const parentClass = 'retain';
   const authorData = {};
-  const titleEle = document.createElement('div');
-  titleEle.append('Retain');
-  titleEle.className = `${parentClass}__title`;
   const sectionTop = document.createElement('div');
   sectionTop.className = `${parentClass}__section-top`;
   const sectionTopHeading = document.createElement('div');
@@ -34,6 +32,10 @@ export default async function decorate(block) {
       authorData[firstDivText] = secondDivText;
     }
   });
+
+  block.innerHTML = '';
+  // print title
+  printTitleTemplate(authorData, 'retain', block);
 
   console.log('authorData', authorData);
 
@@ -88,7 +90,7 @@ export default async function decorate(block) {
     block.innerHTML = '';
     sectionTop.append(sectionTopHeading, res);
     sectionBottom.append(sectionBottomHeading);
-    block.append(titleEle, sectionTop, sectionBottom);
+    block.append(sectionTop, sectionBottom);
     await mapLoader.loadMap(sectionBottom, 'retainMap', cities);
   } catch (error) {
     console.error('Error fetching Excel data in script1:', error);

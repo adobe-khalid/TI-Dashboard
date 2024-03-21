@@ -3,8 +3,31 @@
 }
 
 .recruit__title {
+	display: flex;
+	align-items: center;
 	margin-bottom: 16px;
+	column-gap: 8px;
+}
+
+.recruit__title-main {
 	font-size: var(--body-font-size-xl);
+	font-weight: bold;
+}
+
+.recruit__title-sub {
+	font-size: var(--body-font-size-s);
+	font-weight: bold;
+}
+
+.recruit__title-btn-info {
+	border: 3px solid blue;
+	color: blue;
+    border-radius: 51%;
+	font-size: var(--body-font-size-s);
+	font-weight: bold;
+    width: 20px;
+    height: 20px;
+    text-align: center;
 }
 
 .recruit__section-top {

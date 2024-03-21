@@ -3,6 +3,7 @@
 import ExcelDataLoader from '../../scripts/excel-to-json-helper.js';
 import MapLoader from '../../scripts/map-helper.js';
 import ChartLoader from '../../scripts/chart-helper.js';
+import { printTitleTemplate } from '../../scripts/dashboard-template.js';
 
 function mergeValueBasedOnKey(data, keyToRefer, keyToMerge) {
   const mergedData = data.reduce((acc, obj) => {
@@ -69,9 +70,6 @@ function getLineChart(data, geo) {
 export default async function decorate(block) {
   const parentClass = 'reskill';
   const authorData = {};
-  const titleEle = document.createElement('div');
-  titleEle.append('Reskill');
-  titleEle.className = `${parentClass}__title`;
   const sectionTop = document.createElement('div');
   sectionTop.className = `${parentClass}__section-top`;
   const sectionTopHeading = document.createElement('div');
@@ -97,6 +95,10 @@ export default async function decorate(block) {
     }
   });
 
+  block.innerHTML = '';
+  // print title
+  printTitleTemplate(authorData, 'reskill', block);
+
   console.log('authorData', authorData);
 
   try {
@@ -110,10 +112,9 @@ export default async function decorate(block) {
     const cities = ['Brabantine City', 'Rhine-Neckar', 'Lyon', 'Cologne', 'Romania'];
     const chartData = excelJson['Gen AI Emerging skills 2024'];
     res = await chartLoader.loadChart(getLineChart(chartData, 'EMEA'));
-    block.innerHTML = '';
     sectionTop.append(sectionTopHeading, res);
     sectionBottom.append(sectionBottomHeading);
-    block.append(titleEle, sectionTop, sectionBottom);
+    block.append(sectionTop, sectionBottom);
     await mapLoader.loadMap(sectionBottom, 'reskillMap', cities);
   } catch (error) {
     console.error('Error fetching Excel data in script1:', error);
