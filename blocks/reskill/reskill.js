@@ -70,16 +70,6 @@ function getLineChart(data, geo) {
 export default async function decorate(block) {
   const parentClass = 'reskill';
   const authorData = {};
-  const sectionTop = document.createElement('div');
-  sectionTop.className = `${parentClass}__section-top`;
-  const sectionTopHeading = document.createElement('div');
-  sectionTopHeading.append('Emerging Skills Based on Github');
-  sectionTopHeading.className = `${parentClass}__section-top-heading`;
-  const sectionBottom = document.createElement('div');
-  sectionBottom.className = `${parentClass}__section-bottom`;
-  const sectionBottomHeading = document.createElement('div');
-  sectionBottomHeading.append('Startup Overview');
-  sectionBottomHeading.className = `${parentClass}__section-bottom-heading`;
 
   // iterate over children and get all authoring data
   block.childNodes.forEach((child) => {

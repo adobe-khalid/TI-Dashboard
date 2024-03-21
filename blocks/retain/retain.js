@@ -8,16 +8,6 @@ import { printTitleTemplate, printSectionTemplate } from '../../scripts/dashboar
 export default async function decorate(block) {
   const parentClass = 'retain';
   const authorData = {};
-  const sectionTop = document.createElement('div');
-  sectionTop.className = `${parentClass}__section-top`;
-  const sectionTopHeading = document.createElement('div');
-  sectionTopHeading.append('Talent Pool By Skill And Company');
-  sectionTopHeading.className = `${parentClass}__section-top-heading`;
-  const sectionBottom = document.createElement('div');
-  sectionBottom.className = `${parentClass}__section-bottom`;
-  const sectionBottomHeading = document.createElement('div');
-  sectionBottomHeading.append('Talent Pool By Location And Company');
-  sectionBottomHeading.className = `${parentClass}__section-bottom-heading`;
 
   // iterate over children and get all authoring data
   block.childNodes.forEach((child) => {
