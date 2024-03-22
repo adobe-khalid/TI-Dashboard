@@ -5,39 +5,14 @@ import MapLoader from '../../scripts/map-helper.js';
 import ChartLoader from '../../scripts/chart-helper.js';
 import { printTitleTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
 
-function groupData(data) {
-  // Grouping the data
-  const groupedData = data.reduce((acc, obj) => {
-    const key = `${obj['Adobe Geo']}-${obj.Quarter}-${obj.Year}-${obj.Topics}`;
-    if (!acc[key]) {
-      acc[key] = [];
-    }
-    acc[key].push(obj);
-    return acc;
-  }, {});
+const authorData = {};
 
-  return groupedData;
-}
-
-function mergeValueBasedOnKey(data, keyToRefer, keyToMerge) {
-  const mergedData = data.reduce((acc, obj) => {
-    if (!acc[obj[keyToRefer]]) {
-      acc[obj[keyToRefer]] = { ...obj };
-    } else {
-      acc[obj[keyToRefer]][keyToMerge] += obj[keyToMerge];
-    }
-    return acc;
-  }, {});
-
-  return Object.values(mergedData);
-}
-
-function getLineChart(data, geo) {
+function getSkillChart(data, tabValue, keyToPrint) {
   const config = {
     years: ['Q3 2022', 'Q4 2022', 'Q1 2023', 'Q2 2023'],
-    geo,
-    topics: ['Numpy', 'Pandas', 'Pytorch', 'R', 'Tensor'],
-    data: [],
+    tabValue,
+    topics: ['Numpy', 'Pandas', 'Pytorch', 'R', 'Tensorflow'],
+    data: data.filter((v) => v['Adobe Geo'] === tabValue),
   };
 
   const chartConfig = {
@@ -51,36 +26,25 @@ function getLineChart(data, geo) {
     },
   };
 
-  // config.data = data.filter((v) => {
-  //   const checkQuarterYear = config.years.filter((qy) => qy === `Q${v.Quarter} ${v.Year}`);
-  //   const checkTopic = config.topics.filter((t) => t.toLowerCase() === v.Topics);
-  //   return checkQuarterYear.length && v['Adobe Geo'] === config.geo && checkTopic;
-  // });
-
-   console.log("config.data ", data);
-
-  config.topics.forEach((v, i) => {
-    let filterData = [];
+  config.topics.forEach((t) => {
+    const topicsValues = [];
     config.years.forEach((y) => {
-      filterData = data.filter((vv) => {
+      const filterVal = config.data.filter((vv) => {
         const checkQuarterYear = (y === `Q${vv.Quarter} ${vv.Year}`);
-        const checkTopics = config.topics.filter((t) => t === vv.Topics);
-        return checkQuarterYear && vv['Adobe Geo'] === config.geo && checkTopics;
+        const checkTopics = t.toLowerCase() === vv.Topics.toLowerCase();
+        return checkQuarterYear && checkTopics;
       });
+      topicsValues.push(
+        filterVal.length
+          ? filterVal.reduce((sum, item) => sum + item[keyToPrint], 0)
+          : 0,
+      );
     });
 
-    console.log("filterData ", filterData);
-
-    const combinedTopics = mergeValueBasedOnKey(filterData, 'Topics', 'Github Pushes');
-    console.log("combinedTopics ", combinedTopics);
-
-    console.log("combiined github pushes ", combinedTopics.map((ct) => ct['Github Pushes']));
-
     chartConfig.data.datasets.push({
-      label: v,
-      data: combinedTopics.map((ct) => (ct['Github Pushes'] + (i * 100))),
+      label: t,
+      data: topicsValues,
       fill: false,
-      borderColor: `rgb(${i}75, ${i * 2}2, ${i * 4}2)`,
       tension: 0.1,
     });
   });
@@ -90,7 +54,6 @@ function getLineChart(data, geo) {
 
 export default async function decorate(block) {
   const parentClass = 'reskill';
-  const authorData = {};
 
   // iterate over children and get all authoring data
   block.childNodes.forEach((child) => {
@@ -127,7 +90,7 @@ export default async function decorate(block) {
     let res = {};
     const cities = ['Brabantine City', 'Rhine-Neckar', 'Lyon', 'Cologne', 'Romania'];
     const chartData = excelJson['Gen AI Emerging skills 2024'];
-    res = await chartLoader.loadChart(getLineChart(chartData, 'EMEA'));
+    res = await chartLoader.loadChart(getSkillChart(chartData, 'EMEA', 'Github Pushes'));
     sectionOneEle.append(res);
     await mapLoader.loadMap(sectionTwoEle, 'reskillMap', cities);
   } catch (error) {
