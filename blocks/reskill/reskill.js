@@ -1,28 +1,28 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-new */
 import ExcelDataLoader from '../../scripts/excel-to-json-helper.js';
-import MapLoader from '../../scripts/map-helper.js';
 import ChartLoader from '../../scripts/chart-helper.js';
 import { printTitleTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
 
 const authorData = {};
 
-function getSkillChart(data, tabValue, keyToPrint) {
+function getReskillChart(data, tabValue, keyToPrint, chartType = 'line', chartAxis = 'x') {
   const config = {
-    years: ['Q3 2022', 'Q4 2022', 'Q1 2023', 'Q2 2023'],
+    years: authorData['chart-skill-year'],
     tabValue,
-    topics: ['Numpy', 'Pandas', 'Pytorch', 'R', 'Tensorflow'],
+    topics: authorData['chart-skill-github'],
     data: data.filter((v) => v['Adobe Geo'] === tabValue),
   };
 
   const chartConfig = {
-    type: 'line',
+    type: chartType,
     data: {
       labels: config.years.map((v) => (v.length ? (v.slice(0, -4) + v.slice(-2)) : '')),
       datasets: [],
     },
     options: {
       maintainAspectRatio: false,
+      indexAxis: chartAxis,
     },
   };
 
@@ -58,16 +58,19 @@ export default async function decorate(block) {
   // iterate over children and get all authoring data
   block.childNodes.forEach((child) => {
     if (child.nodeType === 1) {
-      const firstDivText = child.children[0].textContent.trim();
+      const objText = 'obj';
+      let firstDivText = child.children[0].textContent.trim();
       let secondDivText = child.children[1].textContent.trim();
 
-      if (firstDivText.indexOf('filter') >= 0) {
+      if (firstDivText.indexOf(objText) >= 0) {
+        firstDivText = firstDivText.replace(objText, '').trim();
         secondDivText = secondDivText.split(',');
       }
 
       authorData[firstDivText] = secondDivText;
     }
   });
+
   console.log('authorData', authorData);
 
   block.innerHTML = '';
@@ -80,19 +83,19 @@ export default async function decorate(block) {
 
   try {
     const excelJson = await ExcelDataLoader('/scripts/TI-Dashboard-Template.xlsx');
-    const mapLoader = new MapLoader('AIzaSyBz3r5qBJ3f7UiT28LKYJT4sjcORCVIQiw');
     const chartLoader = new ChartLoader();
     const sectionOneEle = document.querySelector(`.${parentClass} .dashboard__section-one`);
     const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard__section-two`);
 
     console.log('Excel Data from script1:', excelJson);
 
-    let res = {};
-    const cities = ['Brabantine City', 'Rhine-Neckar', 'Lyon', 'Cologne', 'Romania'];
+    let chart1 = {};
+    let chart2 = {};
     const chartData = excelJson['Gen AI Emerging skills 2024'];
-    res = await chartLoader.loadChart(getSkillChart(chartData, 'EMEA', 'Github Pushes'));
-    sectionOneEle.append(res);
-    await mapLoader.loadMap(sectionTwoEle, 'reskillMap', cities);
+    chart1 = await chartLoader.loadChart(getReskillChart(chartData, 'EMEA', 'Github Pushes'));
+    chart2 = await chartLoader.loadChart(getReskillChart(chartData, 'EMEA', 'Github Pushes', 'bar', 'y'));
+    sectionOneEle.append(chart1);
+    sectionTwoEle.append(chart2);
   } catch (error) {
     console.error('Error fetching Excel data in script1:', error);
   }

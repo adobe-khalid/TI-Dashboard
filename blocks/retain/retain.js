@@ -12,16 +12,19 @@ export default async function decorate(block) {
   // iterate over children and get all authoring data
   block.childNodes.forEach((child) => {
     if (child.nodeType === 1) {
-      const firstDivText = child.children[0].textContent.trim();
+      const objText = 'obj';
+      let firstDivText = child.children[0].textContent.trim();
       let secondDivText = child.children[1].textContent.trim();
 
-      if (firstDivText.indexOf('filter') >= 0) {
+      if (firstDivText.indexOf(objText) >= 0) {
+        firstDivText = firstDivText.replace(objText, '').trim();
         secondDivText = secondDivText.split(',');
       }
 
       authorData[firstDivText] = secondDivText;
     }
   });
+
   console.log('authorData', authorData);
 
   block.innerHTML = '';

@@ -163,6 +163,7 @@ export default class MapLoader {
     // Once the script is loaded, initialize the map
     const container = document.createElement('div');
     container.setAttribute('id', mapELeId);
+    container.setAttribute('class', 'map-container');
     container.style.height = '420px';
     col.appendChild(container);
     this.initMap(mapELeId, cities);
