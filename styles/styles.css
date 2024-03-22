@@ -249,7 +249,7 @@ main .section.highlight {
 main .dashboard {
   width: 100%;
   box-sizing: border-box;
-  padding: 18px;
+  padding: 0;
   background-color: var(--light-color);
 }
 
@@ -292,8 +292,8 @@ main .dashboard {
 }
 
 .dashboard__title-btn-info {
-  border: 3px solid blue;
-  color: blue;
+  border: 3px solid var(--link-color);
+  color: var(--link-color);
   border-radius: 51%;
   font-size: var(--body-font-size-s);
   font-weight: bold;
@@ -321,14 +321,12 @@ main .dashboard {
   margin-bottom: 16px;
 }
 
-@media (width >=900px) {
-  .dashboard__section-one {
-    height: 300px;
-    max-height: 300px;
-  }
-}
 /* End - Dashboard */
 
 .chart-container {
   height: 100%;
+}
+
+.chart-container canvas{
+  min-height: 300px;
 }

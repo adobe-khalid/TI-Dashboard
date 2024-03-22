@@ -5,6 +5,20 @@ import MapLoader from '../../scripts/map-helper.js';
 import ChartLoader from '../../scripts/chart-helper.js';
 import { printTitleTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
 
+function groupData(data) {
+  // Grouping the data
+  const groupedData = data.reduce((acc, obj) => {
+    const key = `${obj['Adobe Geo']}-${obj.Quarter}-${obj.Year}-${obj.Topics}`;
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(obj);
+    return acc;
+  }, {});
+
+  return groupedData;
+}
+
 function mergeValueBasedOnKey(data, keyToRefer, keyToMerge) {
   const mergedData = data.reduce((acc, obj) => {
     if (!acc[obj[keyToRefer]]) {
@@ -22,7 +36,7 @@ function getLineChart(data, geo) {
   const config = {
     years: ['Q3 2022', 'Q4 2022', 'Q1 2023', 'Q2 2023'],
     geo,
-    topics: ['Numpy', 'Pandas', 'Pytorch', 'R', 'TensorFlow'],
+    topics: ['Numpy', 'Pandas', 'Pytorch', 'R', 'Tensor'],
     data: [],
   };
 
@@ -32,22 +46,29 @@ function getLineChart(data, geo) {
       labels: config.years.map((v) => (v.length ? (v.slice(0, -4) + v.slice(-2)) : '')),
       datasets: [],
     },
+    options: {
+      maintainAspectRatio: false,
+    },
   };
 
   // config.data = data.filter((v) => {
   //   const checkQuarterYear = config.years.filter((qy) => qy === `Q${v.Quarter} ${v.Year}`);
   //   const checkTopic = config.topics.filter((t) => t.toLowerCase() === v.Topics);
-  //   return checkQuarterYear.length && v['Adobe Geo'] === 'EMEA' && checkTopic;
+  //   return checkQuarterYear.length && v['Adobe Geo'] === config.geo && checkTopic;
   // });
 
-  console.log("config.data ", config.data);
+   console.log("config.data ", data);
 
-  config.topics.forEach((v) => {
-    const filterData = data.filter((vv) => {
-      const checkQuarterYear = config.years.filter((qy) => qy === `Q${vv.Quarter} ${vv.Year}`);
-      const checkTopics = config.topics.filter((t) => t === vv.Topics);
-      return checkQuarterYear && vv['Adobe Geo'] === config.geo && checkTopics;
+  config.topics.forEach((v, i) => {
+    let filterData = [];
+    config.years.forEach((y) => {
+      filterData = data.filter((vv) => {
+        const checkQuarterYear = (y === `Q${vv.Quarter} ${vv.Year}`);
+        const checkTopics = config.topics.filter((t) => t === vv.Topics);
+        return checkQuarterYear && vv['Adobe Geo'] === config.geo && checkTopics;
+      });
     });
+
     console.log("filterData ", filterData);
 
     const combinedTopics = mergeValueBasedOnKey(filterData, 'Topics', 'Github Pushes');
@@ -57,9 +78,9 @@ function getLineChart(data, geo) {
 
     chartConfig.data.datasets.push({
       label: v,
-      data: combinedTopics.map((ct) => ct['Github Pushes']),
+      data: combinedTopics.map((ct) => (ct['Github Pushes'] + (i * 100))),
       fill: false,
-      borderColor: 'rgb(75, 192, 192)',
+      borderColor: `rgb(${i}75, ${i * 2}2, ${i * 4}2)`,
       tension: 0.1,
     });
   });

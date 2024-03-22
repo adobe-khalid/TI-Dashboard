@@ -69,6 +69,7 @@ export default async function decorate(block) {
         }],
       },
       options: {
+        maintainAspectRatio: false,
         plugins: {
           legend: {
             position: 'bottom',
