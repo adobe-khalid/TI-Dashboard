@@ -1,70 +1,103 @@
-function printTitleTemplate(dataObj, bindOnElement) {
+export const createElement = (elementType, classNames, text = null, parent = null) => {
+  const element = document.createElement(elementType);
+  if (classNames) {
+    if (classNames.includes(',')) {
+      classNames
+        .split(',')
+        .map((className) => className.trim())
+        .forEach((className) => {
+          element.classList.add(className);
+        });
+    } else {
+      element.classList.add(classNames.trim());
+    }
+  }
+  if (text instanceof HTMLImageElement) {
+    element.appendChild(text);
+  } else if (text) {
+    element.innerHTML = text;
+  }
+  if (parent) {
+    parent.appendChild(element);
+  }
+  return element;
+};
+
+export const createFilterElements = (filterData, parentClass, bindOnElement) => {
+  const filterItemList = createElement('div', `${parentClass}-item`, null, bindOnElement);
+  filterData.forEach((value, key) => {
+    const className = key === 0 ? 'active' : '';
+    const filterItem = createElement('span', className, value, filterItemList);
+    filterItem.addEventListener('click', function () {
+      // console.log('callback function', this.textContent);
+      if (!this.classList.contains('active')) {
+        this.parentNode.querySelector('span.active').classList.remove('active');
+        this.classList.add('active');
+      }
+    });
+  });
+  return bindOnElement;
+};
+
+export const printTitleTemplate = (dataObj, bindOnElement) => {
   const config = dataObj || {};
   const parentClass = 'dashboard__title';
-  const parentEle = document.createElement('div');
-
-  parentEle.className = parentClass;
+  const parentEle = createElement('div', parentClass, '', bindOnElement);
 
   if (config['title-main']) {
-    const titleMain = document.createElement('div');
-    titleMain.append(config['title-main']);
-    titleMain.className = `${parentClass}-main`;
-    parentEle.appendChild(titleMain);
+    createElement('div', `${parentClass}-main`, config['title-main'], parentEle);
   }
 
   if (config['title-sub']) {
-    const titleSub = document.createElement('div');
-    titleSub.append(config['title-sub']);
-    titleSub.className = `${parentClass}-sub`;
-    parentEle.appendChild(titleSub);
+    createElement('div', `${parentClass}-sub`, config['title-sub'], parentEle);
   }
 
   if (config['btn-info']) {
-    const btnInfo = document.createElement('span');
-    btnInfo.append('i');
-    btnInfo.className = `${parentClass}-btn-info`;
-    parentEle.appendChild(btnInfo);
+    createElement('span', `${parentClass}-btn-info`, 'i', parentEle);
   }
+};
 
-  if (bindOnElement) {
-    bindOnElement.appendChild(parentEle);
-  }
-}
+export const printFilterTabsTemplate = (leftFilter, rightFilter, bindOnElement) => {
+  const parentClass = 'dashboard__filter';
+  const filterContainer = createElement('div', parentClass);
 
-function printFilterTabsTemplate(leftFilter, rightFilter, bindOnElement) {
   if (leftFilter) {
-    // left tab filter html
+    createFilterElements(leftFilter, parentClass, filterContainer);
   }
 
   if (rightFilter) {
-    // left tab filter html
+    createFilterElements(rightFilter, parentClass, filterContainer);
   }
 
   if (bindOnElement) {
-    // append all above created elements to bindOnElement
+    bindOnElement.appendChild(filterContainer);
   }
-}
+};
 
-function printSectionTemplate(dataObj, bindOnElement, firstSection = true) {
+export const printSectionTemplate = (dataObj, bindOnElement, firstSection = true) => {
   const parentClass = 'dashboard__section';
   const selectorClass = firstSection ? 'dashboard__section-one' : 'dashboard__section-two';
-  const parentEle = document.createElement('div');
-  parentEle.className = `${parentClass} ${selectorClass}`;
+  const parentEle = createElement('div', `${parentClass},${selectorClass}`);
 
   if (dataObj.title) {
-    const titleEle = document.createElement('div');
-    titleEle.className = `${parentClass}-heading`;
-    titleEle.append(dataObj.title);
-    parentEle.appendChild(titleEle);
+    createElement('div', `${parentClass}-heading`, dataObj.title, parentEle);
   }
 
   if (bindOnElement) {
     bindOnElement.appendChild(parentEle);
   }
-}
+};
 
-export {
-  printTitleTemplate,
-  printFilterTabsTemplate,
-  printSectionTemplate,
+export const arrayToObject = (inputArray) => {
+  const outputObject = {};
+  inputArray.forEach((item) => {
+    Object.keys(item).forEach((key) => {
+      if (!outputObject[key]) {
+        outputObject[key] = [];
+      }
+      const value = item[key];
+      outputObject[key].push(value !== null ? value : 'na');
+    });
+  });
+  return outputObject;
 };

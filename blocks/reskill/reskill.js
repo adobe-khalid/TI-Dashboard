@@ -3,7 +3,7 @@
 import ExcelDataLoader from '../../scripts/excel-to-json-helper.js';
 import MapLoader from '../../scripts/map-helper.js';
 import ChartLoader from '../../scripts/chart-helper.js';
-import { printTitleTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
+import { printTitleTemplate, printFilterTabsTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
 
 function mergeValueBasedOnKey(data, keyToRefer, keyToMerge) {
   const mergedData = data.reduce((acc, obj) => {
@@ -29,7 +29,7 @@ function getLineChart(data, geo) {
   const chartConfig = {
     type: 'line',
     data: {
-      labels: config.years.map((v) => (v.length ? (v.slice(0, -4) + v.slice(-2)) : '')),
+      labels: config.years.map((v) => (v.length ? v.slice(0, -4) + v.slice(-2) : '')),
       datasets: [],
     },
   };
@@ -40,7 +40,7 @@ function getLineChart(data, geo) {
   //   return checkQuarterYear.length && v['Adobe Geo'] === 'EMEA' && checkTopic;
   // });
 
-  console.log("config.data ", config.data);
+  // console.log('config.data ', config.data);
 
   config.topics.forEach((v) => {
     const filterData = data.filter((vv) => {
@@ -48,12 +48,15 @@ function getLineChart(data, geo) {
       const checkTopics = config.topics.filter((t) => t === vv.Topics);
       return checkQuarterYear && vv['Adobe Geo'] === config.geo && checkTopics;
     });
-    console.log("filterData ", filterData);
+    // console.log('filterData ', filterData);
 
     const combinedTopics = mergeValueBasedOnKey(filterData, 'Topics', 'Github Pushes');
-    console.log("combinedTopics ", combinedTopics);
+    // console.log('combinedTopics ', combinedTopics);
 
-    console.log("combiined github pushes ", combinedTopics.map((ct) => ct['Github Pushes']));
+    // console.log(
+    //   'combiined github pushes ',
+    //   combinedTopics.map((ct) => ct['Github Pushes'])
+    // );
 
     chartConfig.data.datasets.push({
       label: v,
@@ -84,11 +87,13 @@ export default async function decorate(block) {
       authorData[firstDivText] = secondDivText;
     }
   });
-  console.log('authorData', authorData);
+  // console.log('authorData', authorData);
 
   block.innerHTML = '';
   // print title
   printTitleTemplate(authorData, block);
+
+  printFilterTabsTemplate(authorData['filter-left'], authorData['filter-right'], block);
   // print section one
   printSectionTemplate({ title: authorData['title-skill-github'] }, block, true);
   // print section two
@@ -101,7 +106,7 @@ export default async function decorate(block) {
     const sectionOneEle = document.querySelector(`.${parentClass} .dashboard__section-one`);
     const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard__section-two`);
 
-    console.log('Excel Data from script1:', excelJson);
+    // console.log('Excel Data from script1:', excelJson);
 
     let res = {};
     const cities = ['Brabantine City', 'Rhine-Neckar', 'Lyon', 'Cologne', 'Romania'];
@@ -110,6 +115,6 @@ export default async function decorate(block) {
     sectionOneEle.append(res);
     await mapLoader.loadMap(sectionTwoEle, 'reskillMap', cities);
   } catch (error) {
-    console.error('Error fetching Excel data in script1:', error);
+    // console.error('Error fetching Excel data in script1:', error);
   }
 }

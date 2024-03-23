@@ -17,9 +17,12 @@
   --background-color: white;
   --light-color: #F8F8F8;
   --dark-color: #ccc;
-  --text-color: black;
+  --text-color: #222222;
   --border-color: #D5D5D5;
   --red-color: #F91101;
+  --light-blue-color: #0265DC;
+  --white-color: #FFFFFF;
+
 
   /* fonts */
   --body-font-family: roboto, roboto-fallback;
@@ -223,6 +226,13 @@ main img {
   width: 100%;
 }
 
+.justify-left {
+  justify-content: left;
+}
+.justify-right {
+  justify-content: right;
+}
+
 /* sections */
 main .section {
   padding: 64px 16px;
@@ -303,6 +313,41 @@ main .dashboard {
 }
 /* End - Dashboard title */
 
+/* Start - Dashboard Filter */
+.dashboard__filter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dashboard__filter-item {
+	display: flex;
+  margin-bottom: 16px;
+}
+
+.dashboard__filter span {
+  padding: 8px 8px 9px;
+  border: 2px solid var(--border-color);
+	font-size: var(--body-font-size-xs);
+  color: var(--text-color);
+  cursor: pointer;
+  line-height: 15px;
+}
+.dashboard__filter span:first-child {
+	border-radius: 16px 0 0 16px;
+	border-right: 0px;
+}
+.dashboard__filter span:last-child {
+	border-radius: 0px 16px 16px 0;
+	border-left: 0px;
+}
+
+.dashboard__filter span.active {
+	background: var(--light-blue-color);
+	color: var(--white-color);
+}
+/* End - Dashboard Filter */
+
 /* Start - Dashboard Section */
 .dashboard__section {
   background-color: var(--background-color);
@@ -323,8 +368,8 @@ main .dashboard {
 
 @media (width >=900px) {
   .dashboard__section-one {
-    height: 300px;
-    max-height: 300px;
+    /* height: 300px;
+    max-height: 300px; */
   }
 }
 /* End - Dashboard */

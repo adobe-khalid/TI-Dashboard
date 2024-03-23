@@ -1,4 +1,132 @@
 .retain {
-	padding: 16px 16px 32px 16px;
-	background-color: #EDEDED;
+  padding: 16px 16px 32px;
+  background-color: #ededed;
+}
+
+.retain-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.metrics-item {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.metrics-value {
+  width: 100%;
+  max-height: 800px;
+  overflow-y: scroll;
+}
+
+.metrics {
+  border: #d5d5d5 solid 2px;
+  padding: 8px 16px 8px 12px;
+  margin: 8px;
+  border-radius: 16px;
+  font-size: 12px;
+  letter-spacing: 0;
+  color: #000000;
+  cursor: pointer;
+  line-height: 15px;
+}
+
+.metrics.selected {
+  background: #0165dc;
+  color: #ffffff;
+}
+
+.metrics.selected:after {
+  padding-left: 8px;
+  content: "\00d7";
+  font-size: 14px;
+}
+
+.table-container {
+  display: table;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.table-row {
+  display: table-row;
+}
+
+.table-row:first-child {
+  background: #d5d5d5;
+}
+
+.table-cell {
+  border-bottom: 1px solid #d5d5d5;
+  border-right: 1px solid #d5d5d5;
+  display: table-cell;
+  padding: 8px;
+  width: 50%;
+}
+
+.table-cell:last-child {
+  border-right: 0px;
+}
+
+/* Start - Attrition Section */
+.dashboard__section .product__container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.product__container-item {
+  display: flex;
+}
+
+.product__container-item .logo {
+  min-height: 44px;
+  min-width: 44px;
+  max-width: 48px;
+  border: 2px #d5d5d5 solid;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 4px 0;
+}
+
+.product__container-item .logo img {
+  max-width: 32px;
+  max-height: 32px;
+}
+
+.product__container-item .products {
+  display: flex;
+  align-items: center;
+}
+
+.product__container-item .products p {
+  padding: 8px;
+  margin: 0 8px;
+  background: #f8f8f8;
+}
+
+.dashboard__section-one .product__container {
+  justify-content: center;
+  padding: 0 74px;
+}
+
+.dashboard__section-one .product__container-item {
+  flex-direction: column;
+  align-items: center;
+  margin: 8px 14px;
+  justify-content: left;
+  padding: 0;
+}
+
+.dashboard__section-one .product__container-item:first-child {
+  width: 100%;
+  padding-bottom: 16px;
+}
+
+.dashboard__section-one .product__container-item .products p {
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  color: #222222;
 }

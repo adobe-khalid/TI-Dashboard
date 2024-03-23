@@ -3,7 +3,7 @@
 import ExcelDataLoader from '../../scripts/excel-to-json-helper.js';
 import MapLoader from '../../scripts/map-helper.js';
 import ChartLoader from '../../scripts/chart-helper.js';
-import { printTitleTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
+import { printTitleTemplate, printFilterTabsTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
 
 export default async function decorate(block) {
   const parentClass = 'recruit';
@@ -22,11 +22,12 @@ export default async function decorate(block) {
       authorData[firstDivText] = secondDivText;
     }
   });
-  console.log('authorData', authorData);
 
   block.innerHTML = '';
   // print title
   printTitleTemplate(authorData, block);
+  // print section FilterTabs
+  printFilterTabsTemplate(authorData['filter-left'], authorData['filter-right'], block);
   // print section one
   printSectionTemplate({ title: authorData['title-trends'] }, block, true);
   // print section two
@@ -39,8 +40,6 @@ export default async function decorate(block) {
     const sectionOneEle = document.querySelector(`.${parentClass} .dashboard__section-one`);
     const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard__section-two`);
 
-    console.log('Excel Data from script1:', excelJson);
-
     let res = {};
     const cities = ['Madrid', 'Warsaw', 'Copenhagen metropolitan area', 'Frankfurt Rhine-Main', 'Stockholm'];
     const chartData = excelJson['EMEA 5-10years'].slice(0, 6);
@@ -48,25 +47,29 @@ export default async function decorate(block) {
       type: 'scatter',
       data: {
         labels: chartData.map((v) => v.Location),
-        datasets: [{
-          type: 'bar',
-          label: 'Professionals',
-          data: chartData.map((v) => v.Professionals),
-          borderColor: '#0FB5AE',
-          backgroundColor: '#4046CA',
-        }, {
-          type: 'bar',
-          label: 'Related Job posts',
-          data: chartData.map((v) => v['Related Job posts']),
-          borderColor: 'rgb(255, 99, 132)',
-          backgroundColor: 'rgba(255, 32, 45, 0.2)',
-        }, {
-          type: 'line',
-          label: '1y growth',
-          data: chartData.map((v) => v['1y growth'] * 1000),
-          fill: false,
-          borderColor: 'rgb(54, 162, 235)',
-        }],
+        datasets: [
+          {
+            type: 'bar',
+            label: 'Professionals',
+            data: chartData.map((v) => v.Professionals),
+            borderColor: '#0FB5AE',
+            backgroundColor: '#4046CA',
+          },
+          {
+            type: 'bar',
+            label: 'Related Job posts',
+            data: chartData.map((v) => v['Related Job posts']),
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgba(255, 32, 45, 0.2)',
+          },
+          {
+            type: 'line',
+            label: '1y growth',
+            data: chartData.map((v) => v['1y growth'] * 1000),
+            fill: false,
+            borderColor: 'rgb(54, 162, 235)',
+          },
+        ],
       },
       options: {
         plugins: {
@@ -85,6 +88,6 @@ export default async function decorate(block) {
     sectionOneEle.append(res);
     await mapLoader.loadMap(sectionTwoEle, 'recruitMap', cities);
   } catch (error) {
-    console.error('Error fetching Excel data in script1:', error);
+    // console.error('Error fetching Excel data in script1:', error);
   }
 }
