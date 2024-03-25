@@ -314,30 +314,32 @@ main .dashboard {
 }
 
 .dashboard__filter-item {
-	display: flex;
+  display: flex;
   margin-bottom: 16px;
 }
 
 .dashboard__filter span {
   padding: 8px 8px 9px;
   border: 2px solid var(--border-color);
-	font-size: var(--body-font-size-xs);
+  font-size: var(--body-font-size-xs);
   color: var(--text-color);
   cursor: pointer;
   line-height: 15px;
 }
+
 .dashboard__filter span:first-child {
-	border-radius: 16px 0 0 16px;
-	border-right: 0px;
+  border-radius: 16px 0 0 16px;
+  border-right: 0px;
 }
+
 .dashboard__filter span:last-child {
-	border-radius: 0px 16px 16px 0;
-	border-left: 0px;
+  border-radius: 0px 16px 16px 0;
+  border-left: 0px;
 }
 
 .dashboard__filter span.active {
-	background: var(--light-blue-color);
-	color: var(--white-color);
+  background: var(--light-blue-color);
+  color: var(--white-color);
 }
 /* End - Dashboard Filter */
 
@@ -358,19 +360,12 @@ main .dashboard {
   font-weight: bold;
   margin-bottom: 16px;
 }
-
-@media (width >=900px) {
-  .dashboard__section-one {
-    /* height: 300px;
-    max-height: 300px; */
-  }
-}
 /* End - Dashboard */
 
 .chart-container {
   height: 100%;
 }
 
-.chart-container canvas{
+.chart-container canvas {
   min-height: 300px;
 }
