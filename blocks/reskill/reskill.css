@@ -7,3 +7,7 @@
 		padding: 16px 0px 32px 16px;
 	}
 }
+
+.reskill .dashboard__section-two .chart-container canvas {
+	min-height: 380px;
+}

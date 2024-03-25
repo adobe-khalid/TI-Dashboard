@@ -368,4 +368,5 @@ main .dashboard {
 
 .chart-container canvas {
   min-height: 300px;
+  margin: 0 auto;
 }

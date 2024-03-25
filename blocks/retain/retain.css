@@ -171,3 +171,11 @@
   background-color: transparent;
 }
 /* End - Retain Legend Section */
+
+.retain .dashboard__section-one .chart-container canvas {
+  min-height: 212px;
+}
+
+.retain .dashboard__section-two .chart-container canvas {
+  min-height: 313px;
+}
