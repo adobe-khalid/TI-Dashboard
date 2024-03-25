@@ -1,6 +1,5 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-undef */
-/* eslint-disable no-new */
 import { loadScript } from './aem.js';
 
 export default class ChartLoader {
@@ -11,8 +10,8 @@ export default class ChartLoader {
     const container = document.createElement('div');
     container.classList.add('chart-container');
     const canvas = document.createElement('canvas');
-    new Chart(canvas, chartConfig);
+    const chartInstance = new Chart(canvas, chartConfig);
     container.append(canvas);
-    return container;
+    return { chart: container, chartInstance };
   }
 }

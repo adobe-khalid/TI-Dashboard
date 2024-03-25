@@ -55,6 +55,7 @@ async function loadChart(type, datasets) {
       datasets,
     },
     options: {
+      maintainAspectRatio: false,
       plugins: {
         legend: {
           display: false,
@@ -78,8 +79,7 @@ async function loadTalentPool() {
 
   const sectionOneEle = retainContainer.querySelector(`.${parentClass} .dashboard__section-one`);
   const sectionTwoEle = retainContainer.querySelector(`.${parentClass} .dashboard__section-two`);
-  
-  
+
   const sectionOneLegend = createView(
     competitorInsights,
     'Open AI roles',
@@ -105,7 +105,7 @@ async function loadTalentPool() {
     },
   ]);
 
-  sectionOneEle.appendChild(skillsElm);
+  sectionOneEle.appendChild(skillsElm.chart);
   const locationElm = await loadChart('line', [
     { label: 'Open AI roles', data: competitorInsights['Open AI roles'] },
     {
@@ -117,7 +117,7 @@ async function loadTalentPool() {
       data: competitorInsights['Diversity & Inclusion score'],
     },
   ]);
-  sectionTwoEle.appendChild(locationElm);
+  sectionTwoEle.appendChild(locationElm.chart);
 }
 
 async function loadKeyMetrics() {

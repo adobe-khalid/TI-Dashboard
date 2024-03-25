@@ -5,8 +5,33 @@ import ChartLoader from '../../scripts/chart-helper.js';
 import { printTitleTemplate, printFilterTabsTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
 
 const authorData = {};
+let chart1 = {};
+let chart2 = {};
+let excelData = {};
 
-function getReskillChart(data, tabValue, keyToPrint, chartType = 'line', chartAxis = 'x') {
+function updateChart(chartInstance, data) {
+  chartInstance.data.datasets = data.datasets;
+  chartInstance.data.labels = data.labels;
+  chartInstance.update();
+}
+
+function getChartConfig(dataObj, chartType = 'line', chartAxis = 'x') {
+  const chartConfig = {
+    type: chartType,
+    data: {
+      labels: dataObj.labels,
+      datasets: dataObj.datasets,
+    },
+    options: {
+      maintainAspectRatio: false,
+      indexAxis: chartAxis,
+    },
+  };
+
+  return chartConfig;
+}
+
+function getChartData(data, tabValue, keyToPrint) {
   const config = {
     years: authorData['chart-skill-year'],
     tabValue,
@@ -14,17 +39,8 @@ function getReskillChart(data, tabValue, keyToPrint, chartType = 'line', chartAx
     data: data.filter((v) => v['Adobe Geo'] === tabValue),
   };
 
-  const chartConfig = {
-    type: chartType,
-    data: {
-      labels: config.years.map((v) => (v.length ? (v.slice(0, -4) + v.slice(-2)) : '')),
-      datasets: [],
-    },
-    options: {
-      maintainAspectRatio: false,
-      indexAxis: chartAxis,
-    },
-  };
+  const labels = config.years.map((v) => (v.length ? (v.slice(0, -4) + v.slice(-2)) : ''));
+  const datasets = [];
 
   config.topics.forEach((t) => {
     const topicsValues = [];
@@ -41,7 +57,7 @@ function getReskillChart(data, tabValue, keyToPrint, chartType = 'line', chartAx
       );
     });
 
-    chartConfig.data.datasets.push({
+    datasets.push({
       label: t,
       data: topicsValues,
       fill: false,
@@ -49,7 +65,29 @@ function getReskillChart(data, tabValue, keyToPrint, chartType = 'line', chartAx
     });
   });
 
+  return { labels, datasets };
+}
+
+function getReskillChart(data, tabValue, keyToPrint, chartType = 'line', chartAxis = 'x') {
+  const chartData = getChartData(data, tabValue, keyToPrint);
+  const chartConfig = getChartConfig(chartData, chartType, chartAxis);
+
   return chartConfig;
+}
+
+function addFilterListener(block) {
+  const filterClass = 'dashboard__filter';
+  const filterList = block.querySelectorAll(`.${filterClass} span`);
+  filterList.forEach((filterItem) => {
+    filterItem.addEventListener('click', (e) => {
+      const currentEle = e.currentTarget;
+      const selectedTabText = currentEle.innerText;
+
+      // update chart 1
+      updateChart(chart1.chartInstance, getChartData(excelData, selectedTabText, 'Github Pushes'));
+      // update chart 2
+    });
+  });
 }
 
 export default async function decorate(block) {
@@ -83,6 +121,9 @@ export default async function decorate(block) {
   // print section two
   printSectionTemplate({ title: authorData['title-startup-overview'] }, block, false);
 
+  // filter listerners like click
+  addFilterListener(block);
+
   try {
     const excelJson = await ExcelDataLoader('/scripts/TI-Dashboard-Template.xlsx');
     const chartLoader = new ChartLoader();
@@ -91,13 +132,11 @@ export default async function decorate(block) {
 
     console.log('Excel Data from script1:', excelJson);
 
-    let chart1 = {};
-    let chart2 = {};
-    const chartData = excelJson['Gen AI Emerging skills 2024'];
-    chart1 = await chartLoader.loadChart(getReskillChart(chartData, 'EMEA', 'Github Pushes'));
-    chart2 = await chartLoader.loadChart(getReskillChart(chartData, 'EMEA', 'Github Pushes', 'bar', 'y'));
-    sectionOneEle.append(chart1);
-    sectionTwoEle.append(chart2);
+    excelData = excelJson['Gen AI Emerging skills 2024'];
+    chart1 = await chartLoader.loadChart(getReskillChart(excelData, 'EMEA', 'Github Pushes'));
+    chart2 = await chartLoader.loadChart(getReskillChart(excelData, 'EMEA', 'Github Pushes', 'bar', 'y'));
+    sectionOneEle.append(chart1.chart);
+    sectionTwoEle.append(chart2.chart);
   } catch (error) {
     console.error('Error fetching Excel data in script1:', error);
   }

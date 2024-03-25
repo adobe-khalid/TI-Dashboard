@@ -5,9 +5,11 @@ import MapLoader from '../../scripts/map-helper.js';
 import ChartLoader from '../../scripts/chart-helper.js';
 import { printTitleTemplate, printFilterTabsTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
 
+const authorData = {};
+let chart1 = {};
+
 export default async function decorate(block) {
   const parentClass = 'recruit';
-  const authorData = {};
 
   // iterate over children and get all authoring data
   block.childNodes.forEach((child) => {
@@ -46,10 +48,9 @@ export default async function decorate(block) {
 
     console.log('Excel Data from script1:', excelJson);
 
-    let res = {};
     const cities = ['Madrid', 'Warsaw', 'Copenhagen metropolitan area', 'Frankfurt Rhine-Main', 'Stockholm'];
     const chartData = excelJson['EMEA 5-10years'].slice(0, 6);
-    res = await chartLoader.loadChart({
+    chart1 = await chartLoader.loadChart({
       type: 'scatter',
       data: {
         labels: chartData.map((v) => v.Location),
@@ -88,7 +89,7 @@ export default async function decorate(block) {
         },
       },
     });
-    sectionOneEle.append(res);
+    sectionOneEle.append(chart1.chart);
     await mapLoader.loadMap(sectionTwoEle, 'recruitMap', cities);
   } catch (error) {
     console.error('Error fetching Excel data in script1:', error);
