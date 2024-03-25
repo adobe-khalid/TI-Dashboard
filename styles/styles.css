@@ -318,26 +318,29 @@ main .dashboard {
   margin-bottom: 16px;
 }
 
-.dashboard__filter span {
+.dashboard__filter button {
   padding: 8px 8px 9px;
   border: 2px solid var(--border-color);
   font-size: var(--body-font-size-xs);
   color: var(--text-color);
   cursor: pointer;
   line-height: 15px;
+  background: transparent;
+  border-radius: 0;
+  font-weight: normal;
 }
 
-.dashboard__filter span:first-child {
+.dashboard__filter button:first-child {
   border-radius: 16px 0 0 16px;
   border-right: 0px;
 }
 
-.dashboard__filter span:last-child {
+.dashboard__filter button:last-child {
   border-radius: 0px 16px 16px 0;
   border-left: 0px;
 }
 
-.dashboard__filter span.active {
+.dashboard__filter button.active {
   background: var(--light-blue-color);
   color: var(--white-color);
 }

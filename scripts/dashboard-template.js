@@ -27,11 +27,11 @@ export const createFilterElements = (filterData, parentClass, bindOnElement) => 
   const filterItemList = createElement('div', `${parentClass}-item`, null, bindOnElement);
   filterData.forEach((value, key) => {
     const className = key === 0 ? 'active' : '';
-    const filterItem = createElement('span', className, value, filterItemList);
+    const filterItem = createElement('button', className, value, filterItemList);
     filterItem.addEventListener('click', function () {
       // console.log('callback function', this.textContent);
       if (!this.classList.contains('active')) {
-        this.parentNode.querySelector('span.active').classList.remove('active');
+        this.parentNode.querySelector('button.active').classList.remove('active');
         this.classList.add('active');
       }
     });
@@ -60,13 +60,15 @@ export const printTitleTemplate = (dataObj, bindOnElement) => {
 export const printFilterTabsTemplate = (leftFilter, rightFilter, bindOnElement) => {
   const parentClass = 'dashboard__filter';
   const filterContainer = createElement('div', parentClass);
+  const leftFilterClasses = `${parentClass}-left,${parentClass}`;
+  const rightFilterClasses = `${parentClass}-right,${parentClass}`;
 
   if (leftFilter) {
-    createFilterElements(leftFilter, parentClass, filterContainer);
+    createFilterElements(leftFilter, leftFilterClasses, filterContainer);
   }
 
   if (rightFilter) {
-    createFilterElements(rightFilter, parentClass, filterContainer);
+    createFilterElements(rightFilter, rightFilterClasses, filterContainer);
   }
 
   if (bindOnElement) {

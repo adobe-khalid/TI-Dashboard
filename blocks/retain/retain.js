@@ -9,6 +9,7 @@ import {
 } from '../../scripts/dashboard-template.js';
 
 let chartLoader;
+let excelJson = {};
 let competitorInsights = [];
 const parentClass = 'retain';
 const authorData = {};
@@ -205,7 +206,7 @@ async function loadAttritionComparison() {
 
 function addFilterListener(block) {
   const filterClass = 'dashboard__filter';
-  const filterList = block.querySelectorAll(`.${filterClass} span`);
+  const filterList = block.querySelectorAll(`.${parentClass} .${filterClass} button`);
   filterList.forEach((filterItem) => {
     filterItem.addEventListener('click', function () {
       retainContainer.innerHTML = '';
@@ -235,7 +236,7 @@ export default async function decorate(block) {
       authorData[firstDivText] = secondDivText;
     }
   });
-  console.log('authorData' , authorData);
+  console.log('authorData', authorData);
   block.innerHTML = '';
   printTitleTemplate(authorData, block);
   // print section FilterTabs
@@ -244,7 +245,7 @@ export default async function decorate(block) {
   block.appendChild(retainContainer);
 
   try {
-    const excelJson = await ExcelDataLoader('/scripts/TI-Dashboard-Template.xlsx');
+    excelJson = await ExcelDataLoader('/scripts/TI-Dashboard-Template.xlsx');
     chartLoader = new ChartLoader();
 
     if (excelJson[authorData['sheet-name']]) {

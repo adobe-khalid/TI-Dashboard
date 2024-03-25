@@ -4,10 +4,12 @@ import ExcelDataLoader from '../../scripts/excel-to-json-helper.js';
 import ChartLoader from '../../scripts/chart-helper.js';
 import { printTitleTemplate, printFilterTabsTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
 
-const authorData = {};
 let chart1 = {};
 let chart2 = {};
-let excelData = {};
+let excelJson = {};
+let excelColumn = [];
+const parentClass = 'reskill';
+const authorData = {};
 
 function updateChart(chartInstance, data) {
   chartInstance.data.datasets = data.datasets;
@@ -77,22 +79,21 @@ function getReskillChart(data, tabValue, keyToPrint, chartType = 'line', chartAx
 
 function addFilterListener(block) {
   const filterClass = 'dashboard__filter';
-  const filterList = block.querySelectorAll(`.${filterClass} span`);
+  const filterList = block.querySelectorAll(`.${parentClass} .${filterClass} button`);
   filterList.forEach((filterItem) => {
     filterItem.addEventListener('click', (e) => {
       const currentEle = e.currentTarget;
       const selectedTabText = currentEle.innerText;
 
       // update chart 1
-      updateChart(chart1.chartInstance, getChartData(excelData, selectedTabText, 'Github Pushes'));
+      updateChart(chart1.chartInstance, getChartData(excelColumn, selectedTabText, 'Github Pushes'));
       // update chart 2
+      updateChart(chart2.chartInstance, getChartData(excelColumn, selectedTabText, 'Github Pushes', 'bar', 'y'));
     });
   });
 }
 
 export default async function decorate(block) {
-  const parentClass = 'reskill';
-
   // iterate over children and get all authoring data
   block.childNodes.forEach((child) => {
     if (child.nodeType === 1) {
@@ -120,21 +121,21 @@ export default async function decorate(block) {
   printSectionTemplate({ title: authorData['title-skill-github'] }, block, true);
   // print section two
   printSectionTemplate({ title: authorData['title-startup-overview'] }, block, false);
-
   // filter listerners like click
   addFilterListener(block);
 
   try {
-    const excelJson = await ExcelDataLoader('/scripts/TI-Dashboard-Template.xlsx');
+    excelJson = await ExcelDataLoader('/scripts/TI-Dashboard-Template.xlsx');
     const chartLoader = new ChartLoader();
     const sectionOneEle = document.querySelector(`.${parentClass} .dashboard__section-one`);
     const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard__section-two`);
 
     console.log('Excel Data from script1:', excelJson);
 
-    excelData = excelJson['Gen AI Emerging skills 2024'];
-    chart1 = await chartLoader.loadChart(getReskillChart(excelData, 'EMEA', 'Github Pushes'));
-    chart2 = await chartLoader.loadChart(getReskillChart(excelData, 'EMEA', 'Github Pushes', 'bar', 'y'));
+    // pick data from  excel tab 'Gen AI Emerging skills 2024'
+    excelColumn = excelJson['Gen AI Emerging skills 2024'];
+    chart1 = await chartLoader.loadChart(getReskillChart(excelColumn, 'EMEA', 'Github Pushes'));
+    chart2 = await chartLoader.loadChart(getReskillChart(excelColumn, 'EMEA', 'Github Pushes', 'bar', 'y'));
     sectionOneEle.append(chart1.chart);
     sectionTwoEle.append(chart2.chart);
   } catch (error) {
