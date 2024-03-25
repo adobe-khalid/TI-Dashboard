@@ -2,7 +2,7 @@
 /* eslint-disable no-new */
 import ExcelDataLoader from '../../scripts/excel-to-json-helper.js';
 import ChartLoader from '../../scripts/chart-helper.js';
-import { printTitleTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
+import { printTitleTemplate, printFilterTabsTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
 
 const authorData = {};
 
@@ -76,6 +76,8 @@ export default async function decorate(block) {
   block.innerHTML = '';
   // print title
   printTitleTemplate(authorData, block);
+  // print section FilterTabs
+  printFilterTabsTemplate(authorData['filter-left'], null, block);
   // print section one
   printSectionTemplate({ title: authorData['title-skill-github'] }, block, true);
   // print section two

@@ -3,7 +3,7 @@
 import ExcelDataLoader from '../../scripts/excel-to-json-helper.js';
 import MapLoader from '../../scripts/map-helper.js';
 import ChartLoader from '../../scripts/chart-helper.js';
-import { printTitleTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
+import { printTitleTemplate, printFilterTabsTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
 
 export default async function decorate(block) {
   const parentClass = 'recruit';
@@ -30,6 +30,8 @@ export default async function decorate(block) {
   block.innerHTML = '';
   // print title
   printTitleTemplate(authorData, block);
+  // print section FilterTabs
+  printFilterTabsTemplate(authorData['filter-left'], authorData['filter-right'], block);
   // print section one
   printSectionTemplate({ title: authorData['title-trends'] }, block, true);
   // print section two
@@ -52,23 +54,23 @@ export default async function decorate(block) {
       data: {
         labels: chartData.map((v) => v.Location),
         datasets: [{
-          type: 'bar',
-          label: 'Professionals',
-          data: chartData.map((v) => v.Professionals),
-          borderColor: '#0FB5AE',
-          backgroundColor: '#4046CA',
+            type: 'bar',
+            label: 'Professionals',
+            data: chartData.map((v) => v.Professionals),
+            borderColor: '#0FB5AE',
+            backgroundColor: '#4046CA',
         }, {
-          type: 'bar',
-          label: 'Related Job posts',
-          data: chartData.map((v) => v['Related Job posts']),
-          borderColor: 'rgb(255, 99, 132)',
-          backgroundColor: 'rgba(255, 32, 45, 0.2)',
+            type: 'bar',
+            label: 'Related Job posts',
+            data: chartData.map((v) => v['Related Job posts']),
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgba(255, 32, 45, 0.2)',
         }, {
-          type: 'line',
-          label: '1y growth',
-          data: chartData.map((v) => v['1y growth'] * 1000),
-          fill: false,
-          borderColor: 'rgb(54, 162, 235)',
+            type: 'line',
+            label: '1y growth',
+            data: chartData.map((v) => v['1y growth'] * 1000),
+            fill: false,
+            borderColor: 'rgb(54, 162, 235)',
         }],
       },
       options: {
