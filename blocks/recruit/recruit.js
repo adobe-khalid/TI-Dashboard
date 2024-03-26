@@ -8,6 +8,7 @@ import { printTitleTemplate, printFilterTabsTemplate, printSectionTemplate } fro
 let chart1 = {};
 let excelJson = {};
 let excelColumn = [];
+let mapLoaderInstance = {};
 const parentClass = 'recruit';
 const authorData = {};
 
@@ -90,7 +91,20 @@ function addFilterListener(block) {
       const leftFilterValue = document.querySelector('.dashboard__filter-left button.active').innerText;
       const rightFilterValue = document.querySelector('.dashboard__filter-right button.active').innerText;
       const data = excelJson[`${leftFilterValue} ${rightFilterValue}`];
+      const cities = data.map((v) => v.Location);
+      // update chart
       updateChart(chart1.chartInstance, getChartData(data));
+
+      console.log('cities ', cities);
+      // update map
+      mapLoaderInstance.updateCities(cities)
+        .then(() => {
+          console.log('Map updated successfully!');
+          // Any further actions after map is updated
+        })
+        .catch((error) => {
+          console.error('Error updating map:', error);
+        });
     });
   });
 }
@@ -128,7 +142,7 @@ export default async function decorate(block) {
 
   try {
     excelJson = await ExcelDataLoader('/scripts/TI-Dashboard-Template.xlsx');
-    const mapLoader = new MapLoader('AIzaSyBz3r5qBJ3f7UiT28LKYJT4sjcORCVIQiw');
+    mapLoaderInstance = new MapLoader('AIzaSyBz3r5qBJ3f7UiT28LKYJT4sjcORCVIQiw');
     const chartLoader = new ChartLoader();
     const sectionOneEle = document.querySelector(`.${parentClass} .dashboard__section-one`);
     const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard__section-two`);
@@ -140,48 +154,17 @@ export default async function decorate(block) {
     cities = excelColumn.map((v) => v.Location);
     chart1 = await chartLoader.loadChart(getRecruitChart(excelColumn));
     sectionOneEle.append(chart1.chart);
-    await mapLoader.loadMap(sectionTwoEle, 'recruitMap', cities);
+
+    // load google map
+    mapLoaderInstance.loadMap(sectionTwoEle, 'recruitMap', cities)
+      .then(() => {
+        console.log('Map loaded successfully!');
+        // Any further actions after map is loaded
+      })
+      .catch((error) => {
+        console.error('Error loading map:', error);
+      });
   } catch (error) {
     console.error('Error fetching Excel data in script1:', error);
   }
 }
-
-// {
-//   type: 'scatter',
-//   data: {
-//     labels: filterResults.map((v) => v.Location),
-//     datasets: [{
-//       type: 'bar',
-//       label: 'Professionals',
-//       data: filterResults.map((v) => v.Professionals),
-//       borderColor: '#0FB5AE',
-//       backgroundColor: '#4046CA',
-//     }, {
-//       type: 'bar',
-//       label: 'Related Job posts',
-//       data: filterResults.map((v) => v['Related Job posts']),
-//       borderColor: 'rgb(255, 99, 132)',
-//       backgroundColor: 'rgba(255, 32, 45, 0.2)',
-//     }, {
-//       type: 'line',
-//       label: '1y growth',
-//       data: filterResults.map((v) => v['1y growth'] + v['Related Job posts']),
-//       fill: false,
-//       borderColor: 'rgb(54, 162, 235)',
-//     }],
-//   },
-//   options: {
-//     maintainAspectRatio: false,
-//     plugins: {
-//       legend: {
-//         position: 'bottom',
-//       },
-//     },
-//     scales: {
-//       minRotation: 90,
-//       y: {
-//         beginAtZero: true,
-//       },
-//     },
-//   },
-// }
