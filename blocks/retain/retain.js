@@ -14,6 +14,7 @@ let competitorInsights = [];
 const parentClass = 'retain';
 const authorData = {};
 const retainContainer = createElement('div', 'retain-container');
+const colors = ['#FF9900', '#34A354', '#F35325', '#0967DF', '#206EBA', '#00A1E1'];
 
 function removeElementById(id) {
   const element = document.getElementById(id);
@@ -72,11 +73,58 @@ async function loadChart(type, datasets) {
   });
 }
 
-async function loadTalentPool() {
-  // print section one
-  printSectionTemplate({ title: authorData['title-pool-skill'] }, retainContainer, true);
-  // print section two
-  printSectionTemplate({ title: authorData['title-pool-location'] }, retainContainer, false);
+function createView(data, label, formatValue, isTalent, classname = '') {
+  const productContainer = document.createElement('div');
+  productContainer.classList.add('product__container');
+  if (classname !== '') {
+    productContainer.classList.add(classname);
+  }
+  productContainer.id = label;
+  const maxLength = Math.max(...Object.values(data).map((arr) => arr.length));
+  for (let i = 0; i < maxLength; i += 1) {
+    const row = document.createElement('div');
+    row.classList.add('product__container-item');
+    Object.keys(data).forEach((key) => {
+      if ((key === 'Competitor' || key === label) && Object.prototype.hasOwnProperty.call(data, key)) {
+        if (data[key][i]) {
+          if (key === 'Competitor') {
+            const logo = document.createElement('img');
+            logo.src = `https://main--ti-dashboard--adobe-khalid.hlx.live/images/${data[key][i].toLowerCase()}-logo.png`;
+            logo.alt = data[key][i];
+            const legendLogo = createElement('div', 'logo', logo, row);
+            if (isTalent) {
+              legendLogo.style.border = `1px solid ${colors[i]}`;
+            }
+          } else {
+            const value = formatValue(data[key][i]);
+            createElement('div', 'products', value, row);
+          }
+        }
+      }
+    });
+    productContainer.appendChild(row);
+  }
+  return productContainer;
+}
+
+function prepareChartData(dataArr) {
+  const chartData = [];
+  dataArr.forEach((chartField, key) => {
+    chartData.push({
+      label: chartField,
+      data: competitorInsights[chartField],
+      borderColor: colors[key],
+      backgroundColor: colors[key],
+    });
+  });
+  return chartData;
+}
+
+async function loadTalentPool(chartObj) {
+  // Print section one
+  printSectionTemplate({ title: authorData['title-pool-skill'].slice(0, 5) }, retainContainer, true);
+  // Print section two
+  printSectionTemplate({ title: authorData['title-pool-location'].slice(0, 5) }, retainContainer, false);
 
   const sectionOneEle = retainContainer.querySelector(`.${parentClass} .dashboard__section-one`);
   const sectionTwoEle = retainContainer.querySelector(`.${parentClass} .dashboard__section-two`);
@@ -85,39 +133,33 @@ async function loadTalentPool() {
     competitorInsights,
     'Open AI roles',
     (value) => `<p>${value}</p>`,
+    true,
   );
   const sectionTwoLegend = createView(
     competitorInsights,
     'Open AI roles',
     (value) => `<p>${value}</p>`,
+    true,
   );
   createElement('div', 'retain-legend', sectionOneLegend, sectionOneEle);
   createElement('div', 'retain-legend', sectionTwoLegend, sectionTwoEle);
 
-  const skillsElm = await loadChart('bar', [
-    { label: 'Open AI roles', data: competitorInsights['Open AI roles'] },
-    {
-      label: 'Employee-NPS Score',
-      data: competitorInsights['Employee-NPS Score'],
-    },
-    {
-      label: 'Diversity & Inclusion score',
-      data: competitorInsights['Diversity & Inclusion score'],
-    },
+  // Extract chart data
+  const skillDataArr = chartObj['chart-talent-skills-company']?.slice(0, 5) || [];
+  const locationDataArr = chartObj['chart-talent-location-company']?.slice(0, 5) || [];
+
+  // Prepare chart data
+  const chartDataSkill = prepareChartData(skillDataArr);
+  const chartDataLocation = prepareChartData(locationDataArr);
+
+  // Load charts in parallel
+  const [skillsElm, locationElm] = await Promise.all([
+    loadChart('bar', chartDataSkill),
+    loadChart('line', chartDataLocation),
   ]);
 
+  // Append charts to sections
   sectionOneEle.appendChild(skillsElm.chart);
-  const locationElm = await loadChart('line', [
-    { label: 'Open AI roles', data: competitorInsights['Open AI roles'] },
-    {
-      label: 'Employee-NPS Score',
-      data: competitorInsights['Employee-NPS Score'],
-    },
-    {
-      label: 'Diversity & Inclusion score',
-      data: competitorInsights['Diversity & Inclusion score'],
-    },
-  ]);
   sectionTwoEle.appendChild(locationElm.chart);
 }
 
@@ -143,37 +185,6 @@ async function loadKeyMetrics() {
       }
     });
   });
-}
-
-function createView(data, label, formatValue, classname = '') {
-  const productContainer = document.createElement('div');
-  productContainer.classList.add('product__container');
-  if (classname !== '') {
-    productContainer.classList.add(classname);
-  }
-  productContainer.id = label;
-  const maxLength = Math.max(...Object.values(data).map((arr) => arr.length));
-  for (let i = 0; i < maxLength; i += 1) {
-    const row = document.createElement('div');
-    row.classList.add('product__container-item');
-    Object.keys(data).forEach((key) => {
-      if ((key === 'Competitor' || key === label) && Object.prototype.hasOwnProperty.call(data, key)) {
-        if (data[key][i]) {
-          if (key === 'Competitor') {
-            const logo = document.createElement('img');
-            logo.src = `https://main--ti-dashboard--adobe-khalid.hlx.live/images/${data[key][i].toLowerCase()}-logo.png`;
-            logo.alt = data[key][i];
-            createElement('div', 'logo', logo, row);
-          } else {
-            const value = formatValue(data[key][i]);
-            createElement('div', 'products', value, row);
-          }
-        }
-      }
-    });
-    productContainer.appendChild(row);
-  }
-  return productContainer;
 }
 
 async function loadAttritionComparison() {
@@ -202,24 +213,25 @@ async function loadAttritionComparison() {
         competitorInsights,
         key,
         (value) => `<p>${value.replaceAll(',', '</p><p>')}</p>`,
+        false,
         'product__container-ai-product',
       );
       sectionTwoEle.appendChild(aiProductElm);
     });
 }
 
-function addFilterListener(block) {
+function addFilterListener(block, data) {
   const filterClass = 'dashboard__filter';
   const filterList = block.querySelectorAll(`.${parentClass} .${filterClass} button`);
   filterList.forEach((filterItem) => {
     filterItem.addEventListener('click', function () {
       retainContainer.innerHTML = '';
       if (this.textContent === 'Key Metrics') {
-        loadKeyMetrics(block);
+        loadKeyMetrics();
       } else if (this.textContent === 'Attrition Comparison') {
-        loadAttritionComparison(block);
+        loadAttritionComparison();
       } else {
-        loadTalentPool(block);
+        loadTalentPool(data);
       }
     });
   });
@@ -254,10 +266,9 @@ export default async function decorate(block) {
 
     if (excelJson[authorData['sheet-name']]) {
       competitorInsights = arrayToObject(excelJson[authorData['sheet-name']]);
-      loadTalentPool(block);
+      loadTalentPool(authorData);
     }
-    addFilterListener(block);
-    // block.appendChild(retainContainer);
+    addFilterListener(block, authorData);
   } catch (error) {
     console.error('Error fetching Excel data in script1:', error);
   }

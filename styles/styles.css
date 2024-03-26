@@ -16,7 +16,7 @@
   --link-hover-color: #136ff6;
   --background-color: white;
   --light-color: #F8F8F8;
-  --dark-color: #ccc;
+  --dark-color: #EDEDED;
   --text-color: #222222;
   --border-color: #D5D5D5;
   --red-color: #F91101;
@@ -373,3 +373,99 @@ main .dashboard {
 .chart-container canvas {
   min-height: 300px;
 }
+
+/* Start - Dropdown */
+.dropdown {
+  position: relative;
+  display: flex;
+  padding: 16px;
+  justify-content: right;
+}
+
+@media (width >=900px) {
+  .dropdown {
+    display: none;
+  }
+}
+
+.dropdown__btn {
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text-color);
+  cursor: pointer;
+  margin: 0;
+  min-width: 160px;
+  text-transform: capitalize;
+}
+
+.dropdown__btn:hover {
+  background-color: var(--border-color);
+}
+
+.dropdown__btn:after {
+  content: "▼";
+  font-size: 12px;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  right: 24px;
+  transform: translateY(-50%) rotate(0deg);
+}
+
+.dropdown__btn.open:after {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: var(--dark-color);
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  top: 58px;
+}
+
+.dropdown-content.show {
+  display: block;
+}
+
+.dropdown-content button {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-radius: unset;
+  background-color: var(--dark-color);
+  text-align: left;
+  cursor: pointer;
+  margin: 0;
+  color: black;
+  text-transform: capitalize;
+}
+
+.dropdown-content button:hover {
+  background-color: #ddd;
+}
+
+.dashboard > div {
+  display: none;
+}
+
+@media (width >=900px) {
+    .dashboard > div {
+        display: block;
+    }
+}
+
+.dashboard .dashboard-show {
+  display: block;
+}
+
+.dashboard .dashboard-hide {
+  display: none;
+}
+
+/* End - Dropdown */
