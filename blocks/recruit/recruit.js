@@ -142,7 +142,7 @@ export default async function decorate(block) {
 
   try {
     excelJson = await ExcelDataLoader('/scripts/TI-Dashboard-Template.xlsx');
-    mapLoaderInstance = new MapLoader('AIzaSyBz3r5qBJ3f7UiT28LKYJT4sjcORCVIQiw');
+    mapLoaderInstance = new MapLoader(authorData['map-api-key']);
     const chartLoader = new ChartLoader();
     const sectionOneEle = document.querySelector(`.${parentClass} .dashboard__section-one`);
     const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard__section-two`);
