@@ -328,6 +328,7 @@ main .dashboard {
   background: transparent;
   border-radius: 0;
   font-weight: normal;
+  margin: 0;
 }
 
 .dashboard__filter button:first-child {

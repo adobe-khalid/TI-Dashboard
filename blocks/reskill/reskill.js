@@ -43,8 +43,9 @@ function getChartData(data, tabValue, keyToPrint) {
 
   const labels = config.years.map((v) => (v.length ? (v.slice(0, -4) + v.slice(-2)) : ''));
   const datasets = [];
+  const colors = ['#7E84FA', '#7326D3', '#72E06A', '#0967DF', '#DE3C82'];
 
-  config.topics.forEach((t) => {
+  config.topics.forEach((t, i) => {
     const topicsValues = [];
     config.years.forEach((y) => {
       const filterVal = config.data.filter((vv) => {
@@ -64,6 +65,8 @@ function getChartData(data, tabValue, keyToPrint) {
       data: topicsValues,
       fill: false,
       tension: 0.1,
+      borderColor: colors[i],
+      backgroundColor: colors[i],
     });
   });
 
