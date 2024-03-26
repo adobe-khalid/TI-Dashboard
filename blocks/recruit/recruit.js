@@ -97,14 +97,14 @@ function addFilterListener(block) {
 
       console.log('cities ', cities);
       // update map
-      mapLoaderInstance.updateCities(cities)
-        .then(() => {
-          console.log('Map updated successfully!');
-          // Any further actions after map is updated
-        })
-        .catch((error) => {
-          console.error('Error updating map:', error);
-        });
+      mapLoaderInstance.updateCities(cities);
+      // .then(() => {
+      //   console.log('Map updated successfully!');
+      //   // Any further actions after map is updated
+      // })
+      // .catch((error) => {
+      //   console.error('Error updating map:', error);
+      // });
     });
   });
 }
@@ -156,14 +156,14 @@ export default async function decorate(block) {
     sectionOneEle.append(chart1.chart);
 
     // load google map
-    mapLoaderInstance.loadMap(sectionTwoEle, 'recruitMap', cities)
-      .then(() => {
-        console.log('Map loaded successfully!');
-        // Any further actions after map is loaded
-      })
-      .catch((error) => {
-        console.error('Error loading map:', error);
-      });
+    mapLoaderInstance.loadMap(sectionTwoEle, 'recruitMap', cities);
+    // .then(() => {
+    //   console.log('Map loaded successfully!');
+    //   // Any further actions after map is loaded
+    // })
+    // .catch((error) => {
+    //   console.error('Error loading map:', error);
+    // });
   } catch (error) {
     console.error('Error fetching Excel data in script1:', error);
   }

@@ -145,9 +145,12 @@ async function loadKeyMetrics() {
   });
 }
 
-function createView(data, label, formatValue) {
+function createView(data, label, formatValue, classname = '') {
   const productContainer = document.createElement('div');
   productContainer.classList.add('product__container');
+  if (classname !== '') {
+    productContainer.classList.add(classname);
+  }
   productContainer.id = label;
   const maxLength = Math.max(...Object.values(data).map((arr) => arr.length));
   for (let i = 0; i < maxLength; i += 1) {
@@ -199,6 +202,7 @@ async function loadAttritionComparison() {
         competitorInsights,
         key,
         (value) => `<p>${value.replaceAll(',', '</p><p>')}</p>`,
+        'product__container-ai-product',
       );
       sectionTwoEle.appendChild(aiProductElm);
     });
