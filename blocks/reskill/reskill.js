@@ -7,9 +7,39 @@ import { printTitleTemplate, printFilterTabsTemplate, printSectionTemplate } fro
 let chart1 = {};
 let chart2 = {};
 let excelJson = {};
-let excelColumn = [];
+let skillChartExcelData = [];
+let startupChartExcelData = [];
 const parentClass = 'reskill';
 const authorData = {};
+
+function abbrevToNumber(abbrev) {
+  // Define mapping of abbreviations to multipliers
+  const abbreviations = {
+    k: 1000,
+    m: 1000000,
+    b: 1000000000,
+  };
+
+  // Extract numeric value and abbreviation from the input string
+  const matches = abbrev.match(/^([\d.]+)([kmb])?$/i);
+  if (!matches) {
+    throw new Error('Invalid abbreviation format');
+  }
+
+  // Convert numeric value to a number
+  const numericValue = parseFloat(matches[1]);
+
+  // Multiply by the corresponding multiplier if an abbreviation is provided
+  if (matches[2]) {
+    const multiplier = abbreviations[matches[2].toLowerCase()];
+    if (!multiplier) {
+      throw new Error('Invalid abbreviation');
+    }
+    return numericValue * multiplier;
+  }
+
+  return numericValue;
+}
 
 function updateChart(chartInstance, data) {
   chartInstance.data.datasets = data.datasets;
@@ -33,7 +63,7 @@ function getChartConfig(dataObj, chartType = 'line', chartAxis = 'x') {
   return chartConfig;
 }
 
-function getChartData(data, tabValue, keyToPrint) {
+function getChart1Data(data, tabValue, keyToPrint) {
   const config = {
     years: authorData['chart-skill-year'],
     tabValue,
@@ -73,8 +103,49 @@ function getChartData(data, tabValue, keyToPrint) {
   return { labels, datasets };
 }
 
+function getLastValueFromRange(value) {
+  const computedValue = value || '0';
+  const parts = computedValue.replace('$', '').split('—');
+  const afterDash = parts[parts.length - 1];
+
+  return afterDash;
+}
+
+function getChart2Data(data) {
+  const results = data?.slice(0, 10);
+  const labels = results.map((v) => v['Startup Name']);
+  const columnsNames = authorData['chart-startup-labels'];
+  const datasets = [];
+  const colors = ['#7E84FA', '#7326D3'];
+
+  columnsNames.forEach((l, i) => {
+    const dataValue = results.map((v) => {
+      const lastValue = getLastValueFromRange(v[l]);
+      const finalNumber = abbrevToNumber(lastValue);
+      return finalNumber;
+    });
+    datasets.push({
+      label: l,
+      data: dataValue,
+      borderColor: colors[i],
+      backgroundColor: colors[i],
+    });
+  });
+
+  console.log('getChart2Data ', { labels, datasets });
+
+  return { labels, datasets };
+}
+
 function getReskillChart(data, tabValue, keyToPrint, chartType = 'line', chartAxis = 'x') {
-  const chartData = getChartData(data, tabValue, keyToPrint);
+  const chartData = getChart1Data(data, tabValue, keyToPrint);
+  const chartConfig = getChartConfig(chartData, chartType, chartAxis);
+
+  return chartConfig;
+}
+
+function getStartupChart(data, tabValue, chartType = 'line', chartAxis = 'x') {
+  const chartData = getChart2Data(data);
   const chartConfig = getChartConfig(chartData, chartType, chartAxis);
 
   return chartConfig;
@@ -89,9 +160,9 @@ function addFilterListener(block) {
       const selectedTabText = currentEle.innerText;
 
       // update chart 1
-      updateChart(chart1.chartInstance, getChartData(excelColumn, selectedTabText, 'Github Pushes'));
+      updateChart(chart1.chartInstance, getChart1Data(excelColumn, selectedTabText, 'Github Pushes'));
       // update chart 2
-      updateChart(chart2.chartInstance, getChartData(excelColumn, selectedTabText, 'Github Pushes', 'bar', 'y'));
+      // updateChart(chart2.chartInstance, getChart1Data(excelColumn, selectedTabText, 'Github Pushes', 'bar', 'y'));
     });
   });
 }
@@ -136,9 +207,10 @@ export default async function decorate(block) {
     console.log('Excel Data from script1:', excelJson);
 
     // pick data from  excel tab 'Gen AI Emerging skills 2024'
-    excelColumn = excelJson['Gen AI Emerging skills 2024'];
-    chart1 = await chartLoader.loadChart(getReskillChart(excelColumn, 'EMEA', 'Github Pushes'));
-    chart2 = await chartLoader.loadChart(getReskillChart(excelColumn, 'EMEA', 'Github Pushes', 'bar', 'y'));
+    skillChartExcelData = excelJson[authorData['chart-skill-sheet-name']];
+    startupChartExcelData = excelJson[authorData['chart-startup-sheet-name']];
+    chart1 = await chartLoader.loadChart(getReskillChart(skillChartExcelData, 'EMEA', 'Github Pushes'));
+    chart2 = await chartLoader.loadChart(getStartupChart(startupChartExcelData, 'EMEA', 'bar', 'y'));
     sectionOneEle.append(chart1.chart);
     sectionTwoEle.append(chart2.chart);
   } catch (error) {
