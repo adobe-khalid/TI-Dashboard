@@ -160,9 +160,9 @@ function addFilterListener(block) {
       const selectedTabText = currentEle.innerText;
 
       // update chart 1
-      updateChart(chart1.chartInstance, getChart1Data(excelColumn, selectedTabText, 'Github Pushes'));
+      updateChart(chart1.chartInstance, getChart1Data(skillChartExcelData, selectedTabText, 'Github Pushes'));
       // update chart 2
-      // updateChart(chart2.chartInstance, getChart1Data(excelColumn, selectedTabText, 'Github Pushes', 'bar', 'y'));
+      // updateChart(chart2.chartInstance, getChart1Data(startupChartExcelData, selectedTabText, 'Github Pushes', 'bar', 'y'));
     });
   });
 }
