@@ -17,11 +17,11 @@
   --background-color: white;
   --light-color: #F8F8F8;
   --dark-color: #EDEDED;
-  --text-color: #222222;
+  --text-color: #222;
   --border-color: #D5D5D5;
   --red-color: #F91101;
   --light-blue-color: #0265DC;
-  --white-color: #FFFFFF;
+  --white-color: #FFF;
 
 
   /* fonts */
@@ -258,6 +258,7 @@ main .dashboard {
 
 .dashboard>div {
   width: 100%;
+  display: none;
 }
 
 @media (width >=900px) {
@@ -277,24 +278,24 @@ main .dashboard {
 }
 
 /* Start - Dashboard title */
-.dashboard__title {
+.dashboard-title {
   display: flex;
   align-items: center;
   margin-bottom: 16px;
   column-gap: 8px;
 }
 
-.dashboard__title-main {
+.dashboard-title-main {
   font-size: var(--body-font-size-xl);
   font-weight: bold;
 }
 
-.dashboard__title-sub {
+.dashboard-title-sub {
   font-size: var(--body-font-size-s);
   font-weight: bold;
 }
 
-.dashboard__title-btn-info {
+.dashboard-title-btn-info {
   border: 3px solid var(--link-color);
   color: var(--link-color);
   border-radius: 51%;
@@ -304,21 +305,22 @@ main .dashboard {
   height: 20px;
   text-align: center;
 }
+
 /* End - Dashboard title */
 
 /* Start - Dashboard Filter */
-.dashboard__filter {
+.dashboard-filter {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.dashboard__filter-item {
+.dashboard-filter-item {
   display: flex;
   margin-bottom: 16px;
 }
 
-.dashboard__filter button {
+.dashboard-filter-button {
   padding: 8px 8px 9px;
   border: 2px solid var(--border-color);
   font-size: var(--body-font-size-xs);
@@ -331,39 +333,41 @@ main .dashboard {
   margin: 0;
 }
 
-.dashboard__filter button:first-child {
+.dashboard-filter-button:first-child {
   border-radius: 16px 0 0 16px;
-  border-right: 0px;
+  border-right: 0;
 }
 
-.dashboard__filter button:last-child {
-  border-radius: 0px 16px 16px 0;
-  border-left: 0px;
+.dashboard-filter-button:last-child {
+  border-radius: 0 16px 16px 0;
+  border-left: 0;
 }
 
-.dashboard__filter button.active {
+.dashboard-filter-button.active {
   background: var(--light-blue-color);
   color: var(--white-color);
 }
+
 /* End - Dashboard Filter */
 
 /* Start - Dashboard Section */
-.dashboard__section {
+.dashboard-section {
   background-color: var(--background-color);
   border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 16px;
 }
 
-.dashboard__section-one {
+.dashboard-section-one {
   margin-bottom: 16px;
 }
 
-.dashboard__section-heading {
+.dashboard-section-heading {
   font-size: var(--body-font-size-s);
   font-weight: bold;
   margin-bottom: 16px;
 }
+
 /* End - Dashboard */
 
 .chart-container {
@@ -388,7 +392,7 @@ main .dashboard {
   }
 }
 
-.dropdown__btn {
+.dropdown-btn {
   padding: 10px;
   font-size: 16px;
   border: 2px solid var(--border-color);
@@ -401,11 +405,11 @@ main .dashboard {
   text-transform: capitalize;
 }
 
-.dropdown__btn:hover {
+.dropdown-btn:hover {
   background-color: var(--border-color);
 }
 
-.dropdown__btn:after {
+.dropdown-btn::after {
   content: "▼";
   font-size: 12px;
   pointer-events: none;
@@ -415,7 +419,7 @@ main .dashboard {
   transform: translateY(-50%) rotate(0deg);
 }
 
-.dropdown__btn.open:after {
+.dropdown-btn.open::after {
   transform: translateY(-50%) rotate(180deg);
 }
 
@@ -424,7 +428,7 @@ main .dashboard {
   position: absolute;
   background-color: var(--dark-color);
   min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 16px 0 rgba(0 0 0 / 20%);
   z-index: 1;
   top: 58px;
 }
@@ -433,7 +437,7 @@ main .dashboard {
   display: block;
 }
 
-.dropdown-content button {
+.dropdown-content-button {
   width: 100%;
   padding: 12px 16px;
   border: none;
@@ -446,12 +450,8 @@ main .dashboard {
   text-transform: capitalize;
 }
 
-.dropdown-content button:hover {
+.dropdown-content-button:hover {
   background-color: #ddd;
-}
-
-.dashboard > div {
-  display: none;
 }
 
 @media (width >=900px) {

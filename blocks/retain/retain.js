@@ -75,7 +75,7 @@ async function loadChart(type, datasets) {
 
 function createView(data, label, formatValue, isTalent, classname = '') {
   const productContainer = document.createElement('div');
-  productContainer.classList.add('product__container');
+  productContainer.classList.add('product-container');
   if (classname !== '') {
     productContainer.classList.add(classname);
   }
@@ -83,7 +83,7 @@ function createView(data, label, formatValue, isTalent, classname = '') {
   const maxLength = Math.max(...Object.values(data).map((arr) => arr.length));
   for (let i = 0; i < maxLength; i += 1) {
     const row = document.createElement('div');
-    row.classList.add('product__container-item');
+    row.classList.add('product-container-item');
     Object.keys(data).forEach((key) => {
       if ((key === 'Competitor' || key === label) && Object.prototype.hasOwnProperty.call(data, key)) {
         if (data[key][i]) {
@@ -126,8 +126,8 @@ async function loadTalentPool(chartObj) {
   // Print section two
   printSectionTemplate({ title: authorData['title-pool-location'].slice(0, 5) }, retainContainer, false);
 
-  const sectionOneEle = retainContainer.querySelector(`.${parentClass} .dashboard__section-one`);
-  const sectionTwoEle = retainContainer.querySelector(`.${parentClass} .dashboard__section-two`);
+  const sectionOneEle = retainContainer.querySelector(`.${parentClass} .dashboard-section-one`);
+  const sectionTwoEle = retainContainer.querySelector(`.${parentClass} .dashboard-section-two`);
 
   const sectionOneLegend = createView(
     competitorInsights,
@@ -174,12 +174,12 @@ async function loadKeyMetrics() {
       const table = createTableByArray(competitorInsights, value);
       metricsVal.appendChild(table);
     }
-    metricsItem.addEventListener('click', function () {
-      if (this.classList.contains('selected')) {
-        this.classList.remove('selected');
+    metricsItem.addEventListener('click', () => {
+      if (metricsItem.classList.contains('selected')) {
+        metricsItem.classList.remove('selected');
         removeElementById(value);
       } else {
-        this.classList.add('selected');
+        metricsItem.classList.add('selected');
         const table = createTableByArray(competitorInsights, value);
         metricsVal.append(table);
       }
@@ -193,8 +193,8 @@ async function loadAttritionComparison() {
   // print section two
   printSectionTemplate({ title: authorData['title-pool-location'] }, retainContainer, false);
 
-  const sectionOneEle = retainContainer.querySelector(`.${parentClass} .dashboard__section-one`);
-  const sectionTwoEle = retainContainer.querySelector(`.${parentClass} .dashboard__section-two`);
+  const sectionOneEle = retainContainer.querySelector(`.${parentClass} .dashboard-section-one`);
+  const sectionTwoEle = retainContainer.querySelector(`.${parentClass} .dashboard-section-two`);
 
   Object.keys(competitorInsights)
     .filter((key) => ['Attrition by AI Engineering Function'].includes(key))
@@ -214,21 +214,21 @@ async function loadAttritionComparison() {
         key,
         (value) => `<p>${value.replaceAll(',', '</p><p>')}</p>`,
         false,
-        'product__container-ai-product',
+        'product-container-ai-product',
       );
       sectionTwoEle.appendChild(aiProductElm);
     });
 }
 
 function addFilterListener(block, data) {
-  const filterClass = 'dashboard__filter';
+  const filterClass = 'dashboard-filter';
   const filterList = block.querySelectorAll(`.${parentClass} .${filterClass} button`);
   filterList.forEach((filterItem) => {
-    filterItem.addEventListener('click', function () {
+    filterItem.addEventListener('click', () => {
       retainContainer.innerHTML = '';
-      if (this.textContent === 'Key Metrics') {
+      if (filterItem.textContent === 'Key Metrics') {
         loadKeyMetrics();
-      } else if (this.textContent === 'Attrition Comparison') {
+      } else if (filterItem.textContent === 'Attrition Comparison') {
         loadAttritionComparison();
       } else {
         loadTalentPool(data);

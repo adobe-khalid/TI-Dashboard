@@ -132,6 +132,7 @@ async function loadPage() {
   await loadLazy(document);
   loadDelayed();
 }
+
 function toggleDropdown(event) {
   const dropdownButton = event.currentTarget;
   dropdownButton.classList.toggle('open');
@@ -142,7 +143,7 @@ function toggleDropdown(event) {
 function showHideElement(event) {
   const targetText = event.target.textContent;
   const targetClass = `${targetText.toLowerCase()}-wrapper`;
-  const dropdownBtn = document.querySelector('.dropdown__btn');
+  const dropdownBtn = document.querySelector('.dropdown-btn');
   dropdownBtn.textContent = targetText;
   document.querySelector('.dashboard .dashboard-show')?.classList.remove('dashboard-show');
   document.querySelector(`.${targetClass}`).classList.add('dashboard-show');
@@ -152,7 +153,7 @@ function createDropdownItems(items) {
   const dropdownContent = document.querySelector('.dropdown-content');
   dropdownContent.innerHTML = '';
   items.forEach((itemText) => {
-    const dropdownItem = createElement('button', '', itemText, dropdownContent);
+    const dropdownItem = createElement('button', 'dropdown-content-button', itemText, dropdownContent);
     dropdownItem.addEventListener('click', showHideElement);
   });
 }
@@ -173,7 +174,7 @@ function loadDropdown() {
   const dropdownContainer = createElement('div', 'dropdown');
   mainElement.prepend(dropdownContainer);
 
-  const dropdownButton = createElement('button', 'dropdown__btn', initialItems[0], dropdownContainer);
+  const dropdownButton = createElement('button', 'dropdown-btn', initialItems[0], dropdownContainer);
   dropdownButton.addEventListener('click', toggleDropdown);
 
   createElement('div', 'dropdown-content', null, dropdownContainer);

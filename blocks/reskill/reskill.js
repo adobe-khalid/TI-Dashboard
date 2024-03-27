@@ -132,8 +132,6 @@ function getChart2Data(data) {
     });
   });
 
-  console.log('getChart2Data ', { labels, datasets });
-
   return { labels, datasets };
 }
 
@@ -152,7 +150,7 @@ function getStartupChart(data, tabValue, chartType = 'line', chartAxis = 'x') {
 }
 
 function addFilterListener(block) {
-  const filterClass = 'dashboard__filter';
+  const filterClass = 'dashboard-filter';
   const filterList = block.querySelectorAll(`.${parentClass} .${filterClass} button`);
   filterList.forEach((filterItem) => {
     filterItem.addEventListener('click', (e) => {
@@ -162,7 +160,16 @@ function addFilterListener(block) {
       // update chart 1
       updateChart(chart1.chartInstance, getChart1Data(skillChartExcelData, selectedTabText, 'Github Pushes'));
       // update chart 2
-      // updateChart(chart2.chartInstance, getChart1Data(startupChartExcelData, selectedTabText, 'Github Pushes', 'bar', 'y'));
+      // updateChart(
+      //   chart2.chartInstance,
+      //   getChart1Data(
+      //     startupChartExcelData,
+      //     selectedTabText,
+      //     'Github Pushes',
+      //     'bar',
+      //     'y',
+      //   ),
+      // );
     });
   });
 }
@@ -184,8 +191,6 @@ export default async function decorate(block) {
     }
   });
 
-  console.log('authorData', authorData);
-
   block.innerHTML = '';
   // print title
   printTitleTemplate(authorData, block);
@@ -201,11 +206,8 @@ export default async function decorate(block) {
   try {
     excelJson = await ExcelDataLoader('/scripts/TI-Dashboard-Template.xlsx');
     const chartLoader = new ChartLoader();
-    const sectionOneEle = document.querySelector(`.${parentClass} .dashboard__section-one`);
-    const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard__section-two`);
-
-    console.log('Excel Data from script1:', excelJson);
-
+    const sectionOneEle = document.querySelector(`.${parentClass} .dashboard-section-one`);
+    const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard-section-two`);
     // pick data from  excel tab 'Gen AI Emerging skills 2024'
     skillChartExcelData = excelJson[authorData['chart-skill-sheet-name']];
     startupChartExcelData = excelJson[authorData['chart-startup-sheet-name']];

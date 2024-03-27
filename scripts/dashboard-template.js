@@ -23,16 +23,17 @@ export const createElement = (elementType, classNames, text = null, parent = nul
   return element;
 };
 
-export const createFilterElements = (filterData, parentClass, bindOnElement) => {
-  const filterItemList = createElement('div', `${parentClass}-item`, null, bindOnElement);
+export const createFilterElements = (filterData, parentClass, wrapperClass, bindOnElement) => {
+  const filterItemList = createElement('div', `${wrapperClass}-item`, null, bindOnElement);
   filterData.forEach((value, key) => {
-    const className = key === 0 ? 'active' : '';
+    let className = `${parentClass}-button`;
+    className += key === 0 ? ',active' : '';
     const filterItem = createElement('button', className, value, filterItemList);
-    filterItem.addEventListener('click', function () {
+    filterItem.addEventListener('click', () => {
       // console.log('callback function', this.textContent);
-      if (!this.classList.contains('active')) {
-        this.parentNode.querySelector('button.active').classList.remove('active');
-        this.classList.add('active');
+      if (!filterItem.classList.contains('active')) {
+        filterItem.parentNode.querySelector('button.active').classList.remove('active');
+        filterItem.classList.add('active');
       }
     });
   });
@@ -41,7 +42,7 @@ export const createFilterElements = (filterData, parentClass, bindOnElement) => 
 
 export const printTitleTemplate = (dataObj, bindOnElement) => {
   const config = dataObj || {};
-  const parentClass = 'dashboard__title';
+  const parentClass = 'dashboard-title';
   const parentEle = createElement('div', parentClass, '', bindOnElement);
 
   if (config['title-main']) {
@@ -58,17 +59,17 @@ export const printTitleTemplate = (dataObj, bindOnElement) => {
 };
 
 export const printFilterTabsTemplate = (leftFilter, rightFilter, bindOnElement) => {
-  const parentClass = 'dashboard__filter';
+  const parentClass = 'dashboard-filter';
   const filterContainer = createElement('div', parentClass);
   const leftFilterClasses = `${parentClass}-left,${parentClass}`;
   const rightFilterClasses = `${parentClass}-right,${parentClass}`;
 
   if (leftFilter) {
-    createFilterElements(leftFilter, leftFilterClasses, filterContainer);
+    createFilterElements(leftFilter, parentClass, leftFilterClasses, filterContainer);
   }
 
   if (rightFilter) {
-    createFilterElements(rightFilter, rightFilterClasses, filterContainer);
+    createFilterElements(rightFilter, parentClass, rightFilterClasses, filterContainer);
   }
 
   if (bindOnElement) {
@@ -77,8 +78,8 @@ export const printFilterTabsTemplate = (leftFilter, rightFilter, bindOnElement) 
 };
 
 export const printSectionTemplate = (dataObj, bindOnElement, firstSection = true) => {
-  const parentClass = 'dashboard__section';
-  const selectorClass = firstSection ? 'dashboard__section-one' : 'dashboard__section-two';
+  const parentClass = 'dashboard-section';
+  const selectorClass = firstSection ? 'dashboard-section-one' : 'dashboard-section-two';
   const parentEle = createElement('div', `${parentClass},${selectorClass}`);
 
   if (dataObj.title) {

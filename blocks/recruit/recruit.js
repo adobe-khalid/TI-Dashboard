@@ -71,8 +71,6 @@ function getChartData(data) {
     });
   });
 
-  console.log('{ labels, datasets } ', { labels, datasets });
-
   return { labels, datasets };
 }
 
@@ -84,18 +82,16 @@ function getRecruitChart(data, tabValue, chartType, chartAxis) {
 }
 
 function addFilterListener(block) {
-  const filterClass = 'dashboard__filter';
+  const filterClass = 'dashboard-filter';
   const filterList = block.querySelectorAll(`.${parentClass} .${filterClass} button`);
   filterList.forEach((filterItem) => {
     filterItem.addEventListener('click', () => {
-      const leftFilterValue = document.querySelector('.dashboard__filter-left button.active').innerText;
-      const rightFilterValue = document.querySelector('.dashboard__filter-right button.active').innerText;
+      const leftFilterValue = document.querySelector('.dashboard-filter-left button.active').innerText;
+      const rightFilterValue = document.querySelector('.dashboard-filter-right button.active').innerText;
       const data = excelJson[`${leftFilterValue} ${rightFilterValue}`];
       const cities = data.map((v) => v.Location);
       // update chart
       updateChart(chart1.chartInstance, getChartData(data));
-
-      console.log('cities ', cities);
       // update map
       mapLoaderInstance.updateCities(cities);
       // .then(() => {
@@ -126,8 +122,6 @@ export default async function decorate(block) {
     }
   });
 
-  console.log('authorData', authorData);
-
   block.innerHTML = '';
   // print title
   printTitleTemplate(authorData, block);
@@ -144,11 +138,9 @@ export default async function decorate(block) {
     excelJson = await ExcelDataLoader('/scripts/TI-Dashboard-Template.xlsx');
     mapLoaderInstance = new MapLoader(authorData['map-api-key']);
     const chartLoader = new ChartLoader();
-    const sectionOneEle = document.querySelector(`.${parentClass} .dashboard__section-one`);
-    const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard__section-two`);
+    const sectionOneEle = document.querySelector(`.${parentClass} .dashboard-section-one`);
+    const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard-section-two`);
     let cities = [];
-
-    console.log('Excel Data from script1:', excelJson);
 
     excelColumn = excelJson['EMEA 5-10years'];
     cities = excelColumn.map((v) => v.Location);
