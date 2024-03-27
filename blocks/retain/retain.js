@@ -61,6 +61,15 @@ async function loadChart(type, datasets) {
       plugins: {
         legend: {
           display: false,
+          position: 'bottom',
+          align: 'start',
+          labels: {
+            boxWidth: 10,
+            boxHeight: 10,
+            font: {
+              size: 12,
+            },
+          },
         },
       },
       scales: {

@@ -18,7 +18,7 @@ function updateChart(chartInstance, data) {
   chartInstance.update();
 }
 
-function getChartConfig(dataObj, chartType = 'line', chartAxis = 'x') {
+function getChartConfig(dataObj, chartType = 'line', chartAxis = 'x', legendPos = 'bottom') {
   const chartConfig = {
     type: chartType,
     data: {
@@ -30,9 +30,15 @@ function getChartConfig(dataObj, chartType = 'line', chartAxis = 'x') {
       indexAxis: chartAxis,
       plugins: {
         legend: {
-          position: 'bottom',
-          maxWidth: 40,
-          maxHeight: 40,
+          position: legendPos,
+          align: 'start',
+          labels: {
+            boxWidth: 10,
+            boxHeight: 10,
+            font: {
+              size: 12,
+            },
+          },
         },
       },
       scales: {

@@ -47,7 +47,7 @@ function updateChart(chartInstance, data) {
   chartInstance.update();
 }
 
-function getChartConfig(dataObj, chartType = 'line', chartAxis = 'x') {
+function getChartConfig(dataObj, chartType = 'line', chartAxis = 'x', legendPos = 'bottom') {
   const chartConfig = {
     type: chartType,
     data: {
@@ -57,6 +57,25 @@ function getChartConfig(dataObj, chartType = 'line', chartAxis = 'x') {
     options: {
       maintainAspectRatio: false,
       indexAxis: chartAxis,
+      plugins: {
+        legend: {
+          position: legendPos,
+          align: 'start',
+          labels: {
+            boxWidth: 10,
+            boxHeight: 10,
+            font: {
+              size: 12,
+            },
+          },
+        },
+      },
+      scales: {
+        minRotation: 90,
+        y: {
+          beginAtZero: false,
+        },
+      },
     },
   };
 
@@ -147,7 +166,7 @@ function getReskillChart(data, tabValue, keyToPrint, chartType = 'line', chartAx
 
 function getStartupChart(data, tabValue, chartType = 'line', chartAxis = 'x') {
   const chartData = getChart2Data(data);
-  const chartConfig = getChartConfig(chartData, chartType, chartAxis);
+  const chartConfig = getChartConfig(chartData, chartType, chartAxis, 'top');
 
   return chartConfig;
 }

@@ -193,10 +193,10 @@
 
 /* End - Retain Legend Section */
 
-.retain .dashboard-section-one .chart-container canvas {
-  min-height: 212px;
+.retain .dashboard-section-one .chart-container {
+  min-height: 200px;
 }
 
-.retain .dashboard-section-two .chart-container canvas {
-  min-height: 313px;
+.retain .dashboard-section-two .chart-container {
+  min-height: 290px;
 }
