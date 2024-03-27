@@ -247,6 +247,6 @@ export default async function decorate(block) {
     sectionOneEle.append(chart1.chart);
     sectionTwoEle.append(chart2.chart);
   } catch (error) {
-    console.error('Error fetching Excel data in script1:', error);
+    // error
   }
 }

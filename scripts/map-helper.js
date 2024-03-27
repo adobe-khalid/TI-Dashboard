@@ -151,7 +151,7 @@ export default class MapLoader {
           });
           this.markers.push(marker);
         } else {
-          console.error(`Geocode was not successful for the following reason: ${status}`);
+          // console.error(`Geocode was not successful for the following reason: ${status}`);
         }
       });
     });
@@ -174,7 +174,7 @@ export default class MapLoader {
           totalLat += location.lat();
           totalLng += location.lng();
         } else {
-          console.error(`Geocode was not successful for the following reason: ${status}`);
+          // console.error(`Geocode was not successful for the following reason: ${status}`);
         }
       });
     });
@@ -194,10 +194,9 @@ export default class MapLoader {
     try {
       // Ensure that subsequent calls wait for the script to be loaded
       await this.mapLoadedPromise;
-      console.log('Map successfully loaded - ', mapELeId);
     } catch (error) {
-      console.error('Error loading Google Maps API:', error);
-      throw error; // Re-throw the error to propagate it further
+      // console.error('Error loading Google Maps API:', error);
+      // throw error; // Re-throw the error to propagate it further
     }
 
     // Once the script is loaded, initialize the map

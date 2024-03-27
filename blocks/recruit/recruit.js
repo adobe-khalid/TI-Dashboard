@@ -174,6 +174,6 @@ export default async function decorate(block) {
     //   console.error('Error loading map:', error);
     // });
   } catch (error) {
-    console.error('Error fetching Excel data in script1:', error);
+    // error
   }
 }

@@ -264,7 +264,6 @@ export default async function decorate(block) {
       authorData[firstDivText] = secondDivText;
     }
   });
-  console.log('authorData', authorData);
   block.innerHTML = '';
   printTitleTemplate(authorData, block);
   // print section FilterTabs
@@ -282,6 +281,6 @@ export default async function decorate(block) {
     }
     addFilterListener(block, authorData);
   } catch (error) {
-    console.error('Error fetching Excel data in script1:', error);
+    // error
   }
 }
