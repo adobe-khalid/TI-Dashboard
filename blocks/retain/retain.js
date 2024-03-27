@@ -115,6 +115,7 @@ function prepareChartData(dataArr) {
       data: competitorInsights[chartField],
       borderColor: colors[key],
       backgroundColor: colors[key],
+      barThickness: 5,
     });
   });
   return chartData;
@@ -122,9 +123,9 @@ function prepareChartData(dataArr) {
 
 async function loadTalentPool(chartObj) {
   // Print section one
-  printSectionTemplate({ title: authorData['title-pool-skill'].slice(0, 5) }, retainContainer, true);
+  printSectionTemplate({ title: authorData['title-pool-skill'] }, retainContainer, true);
   // Print section two
-  printSectionTemplate({ title: authorData['title-pool-location'].slice(0, 5) }, retainContainer, false);
+  printSectionTemplate({ title: authorData['title-pool-location'] }, retainContainer, false);
 
   const sectionOneEle = retainContainer.querySelector(`.${parentClass} .dashboard-section-one`);
   const sectionTwoEle = retainContainer.querySelector(`.${parentClass} .dashboard-section-two`);
@@ -189,9 +190,9 @@ async function loadKeyMetrics() {
 
 async function loadAttritionComparison() {
   // print section one
-  printSectionTemplate({ title: authorData['title-pool-skill'] }, retainContainer, true);
+  printSectionTemplate({ title: authorData['title-attrition'] }, retainContainer, true);
   // print section two
-  printSectionTemplate({ title: authorData['title-pool-location'] }, retainContainer, false);
+  printSectionTemplate({ title: authorData['title-ai-product'] }, retainContainer, false);
 
   const sectionOneEle = retainContainer.querySelector(`.${parentClass} .dashboard-section-one`);
   const sectionTwoEle = retainContainer.querySelector(`.${parentClass} .dashboard-section-two`);
@@ -203,6 +204,8 @@ async function loadAttritionComparison() {
         competitorInsights,
         key,
         (value) => `<p>${(parseFloat(value) * 100).toFixed(2)}%</p>`,
+        false,
+        'product-container-atrrition-eng',
       );
       sectionOneEle.appendChild(attritionElm);
     });

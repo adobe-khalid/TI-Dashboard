@@ -31,6 +31,8 @@ function getChartConfig(dataObj, chartType = 'line', chartAxis = 'x') {
       plugins: {
         legend: {
           position: 'bottom',
+          maxWidth: 40,
+          maxHeight: 40,
         },
       },
       scales: {
@@ -68,6 +70,8 @@ function getChartData(data) {
       data: dataValue,
       borderColor: colors[i],
       backgroundColor: colors[i],
+      barThickness: 10,
+      borderWidth: 2,
     });
   });
 
@@ -81,13 +85,19 @@ function getRecruitChart(data, tabValue, chartType, chartAxis) {
   return chartConfig;
 }
 
+function getFilterActiveTabs() {
+  const leftFilterValue = document.querySelector('.dashboard-filter-left button.active')?.innerText || '';
+  const rightFilterValue = document.querySelector('.dashboard-filter-right button.active')?.innerText || '';
+
+  return { leftFilterValue, rightFilterValue };
+}
+
 function addFilterListener(block) {
   const filterClass = 'dashboard-filter';
   const filterList = block.querySelectorAll(`.${parentClass} .${filterClass} button`);
   filterList.forEach((filterItem) => {
     filterItem.addEventListener('click', () => {
-      const leftFilterValue = document.querySelector('.dashboard-filter-left button.active').innerText;
-      const rightFilterValue = document.querySelector('.dashboard-filter-right button.active').innerText;
+      const { leftFilterValue, rightFilterValue } = getFilterActiveTabs();
       const data = excelJson[`${leftFilterValue} ${rightFilterValue}`];
       const cities = data.map((v) => v.Location);
       // update chart
@@ -141,8 +151,9 @@ export default async function decorate(block) {
     const sectionOneEle = document.querySelector(`.${parentClass} .dashboard-section-one`);
     const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard-section-two`);
     let cities = [];
+    const { leftFilterValue, rightFilterValue } = getFilterActiveTabs();
 
-    excelColumn = excelJson['EMEA 5-10years'];
+    excelColumn = excelJson[`${leftFilterValue} ${rightFilterValue}`];
     cities = excelColumn.map((v) => v.Location);
     chart1 = await chartLoader.loadChart(getRecruitChart(excelColumn));
     sectionOneEle.append(chart1.chart);

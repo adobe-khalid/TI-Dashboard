@@ -121,7 +121,11 @@
 
 .dashboard-section-one .product-container {
   justify-content: center;
-  padding: 0 74px;
+}
+
+.retain .product-container-atrrition-eng {
+  max-width: 320px;
+  margin: 0 auto;
 }
 
 .dashboard-section-one .product-container-item {

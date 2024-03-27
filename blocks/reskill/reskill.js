@@ -97,6 +97,7 @@ function getChart1Data(data, tabValue, keyToPrint) {
       tension: 0.1,
       borderColor: colors[i],
       backgroundColor: colors[i],
+      barThickness: 10,
     });
   });
 
@@ -129,6 +130,8 @@ function getChart2Data(data) {
       data: dataValue,
       borderColor: colors[i],
       backgroundColor: colors[i],
+      barThickness: 5,
+      borderWidth: 1,
     });
   });
 
@@ -147,6 +150,13 @@ function getStartupChart(data, tabValue, chartType = 'line', chartAxis = 'x') {
   const chartConfig = getChartConfig(chartData, chartType, chartAxis);
 
   return chartConfig;
+}
+
+function getFilterActiveTabs() {
+  const leftFilterValue = document.querySelector('.dashboard-filter-left button.active')?.innerText || '';
+  const rightFilterValue = document.querySelector('.dashboard-filter-right button.active')?.innerText || '';
+
+  return { leftFilterValue, rightFilterValue };
 }
 
 function addFilterListener(block) {
@@ -208,11 +218,13 @@ export default async function decorate(block) {
     const chartLoader = new ChartLoader();
     const sectionOneEle = document.querySelector(`.${parentClass} .dashboard-section-one`);
     const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard-section-two`);
+    const { leftFilterValue } = getFilterActiveTabs();
+
     // pick data from  excel tab 'Gen AI Emerging skills 2024'
     skillChartExcelData = excelJson[authorData['chart-skill-sheet-name']];
     startupChartExcelData = excelJson[authorData['chart-startup-sheet-name']];
-    chart1 = await chartLoader.loadChart(getReskillChart(skillChartExcelData, 'EMEA', 'Github Pushes'));
-    chart2 = await chartLoader.loadChart(getStartupChart(startupChartExcelData, 'EMEA', 'bar', 'y'));
+    chart1 = await chartLoader.loadChart(getReskillChart(skillChartExcelData, leftFilterValue, 'Github Pushes'));
+    chart2 = await chartLoader.loadChart(getStartupChart(startupChartExcelData, leftFilterValue, 'bar', 'y'));
     sectionOneEle.append(chart1.chart);
     sectionTwoEle.append(chart2.chart);
   } catch (error) {
