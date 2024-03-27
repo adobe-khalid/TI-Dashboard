@@ -382,7 +382,7 @@ main .dashboard {
   height: 100%;
   width: 100%;
   max-width: 80%;
-  margin: auto auto 0 auto;
+  margin: auto auto 0;
 }
 
 .chart-container canvas {
