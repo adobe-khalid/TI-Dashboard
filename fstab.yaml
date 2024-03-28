@@ -1,2 +1,3 @@
 mountpoints:
-  /: https://adobe.sharepoint.com/sites/Ti-Dasboard/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FTi%2DDasboard%2FShared%20Documents%2FAuthor&p=true&ga=1
+#  /: https://drive.google.com/drive/u/1/folders/1K27KOFjYY4b0-kHHgofsMkFFWvMzzV44 
+  /: https://adobe.sharepoint.com/:f:/r/sites/Ti-Dasboard/Shared%20Documents/website
