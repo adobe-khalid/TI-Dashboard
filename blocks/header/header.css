@@ -178,6 +178,11 @@ header nav[aria-expanded="true"] .nav-sections {
   align-self: start;
 }
 
+header nav .nav-sections img {
+ max-width: 40px;
+ height: auto;
+}
+
 header nav .nav-sections ul  {
   list-style: none;
   padding-left: 0;
