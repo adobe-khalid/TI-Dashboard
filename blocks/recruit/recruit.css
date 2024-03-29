@@ -1,0 +1,9 @@
+.recruit {
+	padding: 16px 16px 32px;
+}
+
+@media (width >=900px) {
+	.recruit {
+		padding: 16px 16px 32px 0;
+	}
+}

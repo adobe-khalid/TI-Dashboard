@@ -1,0 +1,13 @@
+.reskill {
+	padding: 16px 16px 32px;
+}
+
+@media (width >=900px) {
+	.reskill {
+		padding: 16px 0 32px 16px;
+	}
+}
+
+.reskill .dashboard-section-two .chart-container canvas {
+	min-height: 380px;
+}

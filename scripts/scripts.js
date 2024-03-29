@@ -12,6 +12,7 @@ import {
   loadBlocks,
   loadCSS,
 } from './aem.js';
+import { createElement } from './dashboard-template.js';
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 
@@ -132,4 +133,61 @@ async function loadPage() {
   loadDelayed();
 }
 
+function toggleDropdown(event) {
+  const dropdownButton = event.currentTarget;
+  dropdownButton.classList.toggle('open');
+  const dropdownContent = document.querySelector('.dropdown-content');
+  dropdownContent.classList.toggle('show');
+}
+
+function showHideElement(event) {
+  const targetText = event.target.textContent;
+  const targetClass = `${targetText.toLowerCase()}-wrapper`;
+  const dropdownBtn = document.querySelector('.dropdown-btn');
+  dropdownBtn.textContent = targetText;
+  document.querySelector('.dashboard .dashboard-show')?.classList.remove('dashboard-show');
+  document.querySelector(`.${targetClass}`).classList.add('dashboard-show');
+}
+
+function createDropdownItems(items) {
+  const dropdownContent = document.querySelector('.dropdown-content');
+  dropdownContent.innerHTML = '';
+  items.forEach((itemText) => {
+    const dropdownItem = createElement('button', 'dropdown-content-button', itemText, dropdownContent);
+    dropdownItem.addEventListener('click', showHideElement);
+  });
+}
+
+function loadDropdown() {
+  const initialItems = [];
+  const childSectionBlocks = document.querySelector('.dashboard').children;
+
+  for (let i = 0; i < childSectionBlocks.length; i += 1) {
+    const childClass = childSectionBlocks[i].className.split('-')[0];
+    if (i === 0) {
+      childSectionBlocks[i].classList.add('dashboard-show');
+    }
+    initialItems.push(childClass);
+  }
+
+  const mainElement = document.querySelector('main');
+  const dropdownContainer = createElement('div', 'dropdown');
+  mainElement.prepend(dropdownContainer);
+
+  const dropdownButton = createElement('button', 'dropdown-btn', initialItems[0], dropdownContainer);
+  dropdownButton.addEventListener('click', toggleDropdown);
+
+  createElement('div', 'dropdown-content', null, dropdownContainer);
+  createDropdownItems(initialItems);
+
+  window.addEventListener('click', (event) => {
+    if (!dropdownButton.contains(event.target)) {
+      const dropdownContent = document.querySelector('.dropdown-content');
+      dropdownContent.classList.remove('show');
+      dropdownButton.classList.remove('open');
+    }
+  });
+}
+
 loadPage();
+loadDropdown();

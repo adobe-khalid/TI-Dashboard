@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert Excel to JSON</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+    <style>
+        #jsondata-placeholder {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        pre {
+            width: calc(33.33% - 6px);
+            display: inline-block;
+            border: 1px solid #ccc;
+            height: 300px;
+            overflow: auto;
+            margin-right: 6px;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="button">Fetch and Convert to JSON</button>
+    <div id="jsondata-placeholder"></div>
+
+    <script>
+        document.getElementById('button').addEventListener('click', () => {
+            const excelUrl = 'TI Dashboard Master Data.xlsx'; // Replace with the direct link to your Google Drive file
+
+            fetch(excelUrl, {
+                headers: {
+                    'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                }
+            })
+                .then(response => response.blob())
+                .then(blob => {
+                    const fileReader = new FileReader();
+                    fileReader.onload = function () {
+                        const binaryString = this.result;
+                        const workbook = XLSX.read(binaryString, { type: 'binary' });
+                        const jsondataPlaceholder = document.getElementById('jsondata-placeholder');
+                        jsondataPlaceholder.innerHTML = ''; // Clear previous data
+
+                        const result = {};
+
+                        workbook.SheetNames.forEach((sheetName) => {
+                            const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+                            result[sheetName] = jsonData;
+
+                            const preTag = document.createElement('pre');
+                            const node = document.createTextNode(JSON.stringify(jsonData, null, 2));
+                            preTag.appendChild(node);
+                            jsondataPlaceholder.appendChild(preTag);
+
+                            console.log(sheetName + " ", jsonData);
+                        });
+                    };
+                    fileReader.readAsBinaryString(blob);
+                })
+                .catch(error => {
+                    console.error('Error fetching or converting Excel file:', error);
+                });
+        });
+    </script>
+
+</body>
+
+</html>
