@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-new */
-import ExcelDataLoader from '../../scripts/excel-to-json-helper.js';
 import ChartLoader from '../../scripts/chart-helper.js';
 import { printTitleTemplate, printFilterTabsTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
 
@@ -87,7 +86,7 @@ function getChart1Data(data, tabValue, keyToPrint) {
     years: authorData['chart-skill-year'],
     tabValue,
     topics: authorData['chart-skill-github'],
-    data: data.filter((v) => v['Adobe Geo'] === tabValue),
+    data: data.filter((v) => v['Adobe-Geo'] === tabValue),
   };
 
   const labels = config.years.map((v) => (v.length ? (v.slice(0, -4) + v.slice(-2)) : ''));
@@ -104,7 +103,7 @@ function getChart1Data(data, tabValue, keyToPrint) {
       });
       topicsValues.push(
         filterVal.length
-          ? filterVal.reduce((sum, item) => sum + item[keyToPrint], 0)
+          ? filterVal.reduce((sum, item) => sum + Number(item[keyToPrint]), 0)
           : 0,
       );
     });
@@ -232,21 +231,21 @@ export default async function decorate(block) {
   // filter listerners like click
   addFilterListener(block);
 
-  try {
-    excelJson = await ExcelDataLoader('/scripts/TI-Dashboard-Template.xlsx');
-    const chartLoader = new ChartLoader();
-    const sectionOneEle = document.querySelector(`.${parentClass} .dashboard-section-one`);
-    const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard-section-two`);
-    const { leftFilterValue } = getFilterActiveTabs();
+  // load excel data
+  const excelAPI = await fetch(authorData['excel-sheet']);
+  excelJson = await excelAPI.json();
 
-    // pick data from  excel tab 'Gen AI Emerging skills 2024'
-    skillChartExcelData = excelJson[authorData['chart-skill-sheet-name']];
-    startupChartExcelData = excelJson[authorData['chart-startup-sheet-name']];
-    chart1 = await chartLoader.loadChart(getReskillChart(skillChartExcelData, leftFilterValue, 'Github Pushes'));
-    chart2 = await chartLoader.loadChart(getStartupChart(startupChartExcelData, leftFilterValue, 'bar', 'y'));
-    sectionOneEle.append(chart1.chart);
-    sectionTwoEle.append(chart2.chart);
-  } catch (error) {
-    // error
-  }
+  const chartLoader = new ChartLoader();
+  const sectionOneEle = document.querySelector(`.${parentClass} .dashboard-section-one`);
+  const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard-section-two`);
+  const { leftFilterValue } = getFilterActiveTabs();
+
+  // pick data from  excel tab 'Gen AI Emerging skills 2024'
+  skillChartExcelData = excelJson[authorData['chart-skill-sheet-name']]?.data;
+  startupChartExcelData = excelJson[authorData['chart-startup-sheet-name']]?.data;
+  chart1 = await chartLoader.loadChart(getReskillChart(skillChartExcelData, leftFilterValue, 'Github Pushes'));
+  chart2 = await chartLoader.loadChart(getStartupChart(startupChartExcelData, leftFilterValue, 'bar', 'y'));
+
+  sectionOneEle.append(chart1.chart);
+  sectionTwoEle.append(chart2.chart);
 }

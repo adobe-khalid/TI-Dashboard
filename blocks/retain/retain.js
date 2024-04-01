@@ -1,4 +1,3 @@
-import ExcelDataLoader from '../../scripts/excel-to-json-helper.js';
 import ChartLoader from '../../scripts/chart-helper.js';
 import {
   printTitleTemplate,
@@ -264,6 +263,7 @@ export default async function decorate(block) {
       authorData[firstDivText] = secondDivText;
     }
   });
+
   block.innerHTML = '';
   printTitleTemplate(authorData, block);
   // print section FilterTabs
@@ -271,16 +271,16 @@ export default async function decorate(block) {
 
   block.appendChild(retainContainer);
 
-  try {
-    excelJson = await ExcelDataLoader('/scripts/TI-Dashboard-Template.xlsx');
-    chartLoader = new ChartLoader();
+  // load excel data
+  const excelAPI = await fetch(authorData['excel-sheet']);
+  excelJson = await excelAPI.json();
 
-    if (excelJson[authorData['sheet-name']]) {
-      competitorInsights = arrayToObject(excelJson[authorData['sheet-name']]);
-      loadTalentPool(authorData);
-    }
-    addFilterListener(block, authorData);
-  } catch (error) {
-    // error
+  // load chart
+  chartLoader = new ChartLoader();
+
+  if (excelJson[authorData['sheet-name']] && excelJson[authorData['sheet-name']]?.data) {
+    competitorInsights = arrayToObject(excelJson[authorData['sheet-name']].data);
+    loadTalentPool(authorData);
   }
+  addFilterListener(block, authorData);
 }

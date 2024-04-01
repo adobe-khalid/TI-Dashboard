@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-new */
-import ExcelDataLoader from '../../scripts/excel-to-json-helper.js';
 import MapLoader from '../../scripts/map-helper.js';
 import ChartLoader from '../../scripts/chart-helper.js';
 import { printTitleTemplate, printFilterTabsTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
@@ -54,7 +53,11 @@ function getChartConfig(dataObj, chartType = 'line', chartAxis = 'x', legendPos 
 }
 
 function getChartData(data) {
-  const limitResult = data.slice(0, 6);
+  let limitResult = data.slice(0, 6);
+
+  // sort by location
+  limitResult = limitResult.sort((a, b) => (a.Location > b.Location ? 1 : -1));
+
   const labels = limitResult.map((v) => v.Location);
   const columnLabel = authorData['chart-industry-trend'];
   const chartTypes = authorData['chart-industry-trend-types'];
@@ -63,9 +66,9 @@ function getChartData(data) {
 
   columnLabel.forEach((l, i) => {
     const dataValue = limitResult.map((v) => {
-      let res = v[l];
+      let res = Number(v[l]);
       if (i === (columnLabel.length - 1)) {
-        res += v[columnLabel[1]];
+        res += Number(v[columnLabel[1]]);
       }
       return res;
     });
@@ -104,7 +107,7 @@ function addFilterListener(block) {
   filterList.forEach((filterItem) => {
     filterItem.addEventListener('click', () => {
       const { leftFilterValue, rightFilterValue } = getFilterActiveTabs();
-      const data = excelJson[`${leftFilterValue} ${rightFilterValue}`];
+      const data = excelJson[`${leftFilterValue}-${rightFilterValue}`]?.data;
       const cities = data.map((v) => v.Location);
       // update chart
       updateChart(chart1.chartInstance, getChartData(data));
@@ -138,6 +141,8 @@ export default async function decorate(block) {
     }
   });
 
+  console.log('authorData ', authorData);
+
   block.innerHTML = '';
   // print title
   printTitleTemplate(authorData, block);
@@ -150,30 +155,31 @@ export default async function decorate(block) {
   // filter listerners like click
   addFilterListener(block);
 
-  try {
-    excelJson = await ExcelDataLoader('/scripts/TI-Dashboard-Template.xlsx');
-    mapLoaderInstance = new MapLoader(authorData['map-api-key']);
-    const chartLoader = new ChartLoader();
-    const sectionOneEle = document.querySelector(`.${parentClass} .dashboard-section-one`);
-    const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard-section-two`);
-    let cities = [];
-    const { leftFilterValue, rightFilterValue } = getFilterActiveTabs();
+  // load excel data
+  const excelAPI = await fetch(authorData['excel-sheet']);
+  excelJson = await excelAPI.json();
 
-    excelColumn = excelJson[`${leftFilterValue} ${rightFilterValue}`];
-    cities = excelColumn.map((v) => v.Location);
-    chart1 = await chartLoader.loadChart(getRecruitChart(excelColumn));
-    sectionOneEle.append(chart1.chart);
+  console.log('excelJson ', excelJson);
 
-    // load google map
-    mapLoaderInstance.loadMap(sectionTwoEle, 'recruitMap', cities);
-    // .then(() => {
-    //   console.log('Map loaded successfully!');
-    //   // Any further actions after map is loaded
-    // })
-    // .catch((error) => {
-    //   console.error('Error loading map:', error);
-    // });
-  } catch (error) {
-    // error
-  }
+  mapLoaderInstance = new MapLoader(authorData['map-api-key']);
+  const chartLoader = new ChartLoader();
+  const sectionOneEle = document.querySelector(`.${parentClass} .dashboard-section-one`);
+  const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard-section-two`);
+  let cities = [];
+  const { leftFilterValue, rightFilterValue } = getFilterActiveTabs();
+
+  excelColumn = excelJson[`${leftFilterValue}-${rightFilterValue}`]?.data;
+  cities = excelColumn.map((v) => v.Location);
+  chart1 = await chartLoader.loadChart(getRecruitChart(excelColumn));
+  sectionOneEle.append(chart1.chart);
+
+  // load google map
+  mapLoaderInstance.loadMap(sectionTwoEle, 'recruitMap', cities);
+  // .then(() => {
+  //   console.log('Map loaded successfully!');
+  //   // Any further actions after map is loaded
+  // })
+  // .catch((error) => {
+  //   console.error('Error loading map:', error);
+  // });
 }
