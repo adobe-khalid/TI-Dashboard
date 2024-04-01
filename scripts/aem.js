@@ -503,6 +503,37 @@ async function fetchPlaceholders(prefix = 'default') {
 }
 
 /**
+ * Gets API object.
+ * @param {string} [apiUrl] API url
+ * @returns {object} Window apiResponse object
+ */
+// eslint-disable-next-line import/prefer-default-export
+async function fetchApiResponse(apiUrl) {
+  window.apiResponse = window.apiResponse || {};
+  if (!window.apiResponse[apiUrl]) {
+    window.apiResponse[apiUrl] = new Promise((resolve) => {
+      fetch(apiUrl)
+        .then((resp) => {
+          if (resp.ok) {
+            return resp.json();
+          }
+          return {};
+        })
+        .then((json) => {
+          window.apiResponse[apiUrl] = json;
+          resolve(window.apiResponse[apiUrl]);
+        })
+        .catch(() => {
+          // error loading apiResponse
+          window.apiResponse[apiUrl] = {};
+          resolve(window.apiResponse[apiUrl]);
+        });
+    });
+  }
+  return window.apiResponse[apiUrl];
+}
+
+/**
  * Updates all section status in a container element.
  * @param {Element} main The container element
  */
@@ -692,6 +723,7 @@ export {
   decorateSections,
   decorateTemplateAndTheme,
   fetchPlaceholders,
+  fetchApiResponse,
   getMetadata,
   loadBlock,
   loadBlocks,

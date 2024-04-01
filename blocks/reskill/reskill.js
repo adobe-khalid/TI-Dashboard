@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-new */
 import ChartLoader from '../../scripts/chart-helper.js';
+import { fetchApiResponse } from '../../scripts/aem.js';
 import { printTitleTemplate, printFilterTabsTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
 
 let chart1 = {};
@@ -232,8 +233,7 @@ export default async function decorate(block) {
   addFilterListener(block);
 
   // load excel data
-  const excelAPI = await fetch(authorData['excel-sheet']);
-  excelJson = await excelAPI.json();
+  excelJson = await fetchApiResponse(authorData['excel-sheet']);
 
   const chartLoader = new ChartLoader();
   const sectionOneEle = document.querySelector(`.${parentClass} .dashboard-section-one`);

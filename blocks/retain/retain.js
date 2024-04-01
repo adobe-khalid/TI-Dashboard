@@ -1,4 +1,5 @@
 import ChartLoader from '../../scripts/chart-helper.js';
+import { fetchApiResponse } from '../../scripts/aem.js';
 import {
   printTitleTemplate,
   printFilterTabsTemplate,
@@ -272,8 +273,7 @@ export default async function decorate(block) {
   block.appendChild(retainContainer);
 
   // load excel data
-  const excelAPI = await fetch(authorData['excel-sheet']);
-  excelJson = await excelAPI.json();
+  excelJson = await fetchApiResponse(authorData['excel-sheet']);
 
   // load chart
   chartLoader = new ChartLoader();

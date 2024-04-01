@@ -2,6 +2,7 @@
 /* eslint-disable no-new */
 import MapLoader from '../../scripts/map-helper.js';
 import ChartLoader from '../../scripts/chart-helper.js';
+import { fetchApiResponse } from '../../scripts/aem.js';
 import { printTitleTemplate, printFilterTabsTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
 
 let chart1 = {};
@@ -156,10 +157,9 @@ export default async function decorate(block) {
   addFilterListener(block);
 
   // load excel data
-  const excelAPI = await fetch(authorData['excel-sheet']);
-  excelJson = await excelAPI.json();
+  excelJson = await fetchApiResponse(authorData['excel-sheet']);
 
-  console.log('excelJson ', excelJson);
+  console.log('excelJson await ', excelJson);
 
   mapLoaderInstance = new MapLoader(authorData['map-api-key']);
   const chartLoader = new ChartLoader();
