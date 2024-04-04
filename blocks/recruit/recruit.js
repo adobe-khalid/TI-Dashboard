@@ -9,6 +9,7 @@ let chart1 = {};
 let excelJson = {};
 let excelColumn = [];
 let mapLoaderInstance = {};
+let chartLoader;
 const parentClass = 'recruit';
 const authorData = {};
 
@@ -16,41 +17,6 @@ function updateChart(chartInstance, data) {
   chartInstance.data.datasets = data.datasets;
   chartInstance.data.labels = data.labels;
   chartInstance.update();
-}
-
-function getChartConfig(dataObj, chartType = 'line', chartAxis = 'x', legendPos = 'bottom') {
-  const chartConfig = {
-    type: chartType,
-    data: {
-      labels: dataObj.labels,
-      datasets: dataObj.datasets,
-    },
-    options: {
-      maintainAspectRatio: false,
-      indexAxis: chartAxis,
-      plugins: {
-        legend: {
-          position: legendPos,
-          align: 'start',
-          labels: {
-            boxWidth: 10,
-            boxHeight: 10,
-            font: {
-              size: 12,
-            },
-          },
-        },
-      },
-      scales: {
-        minRotation: 90,
-        y: {
-          beginAtZero: true,
-        },
-      },
-    },
-  };
-
-  return chartConfig;
 }
 
 function getChartData(data) {
@@ -90,7 +56,7 @@ function getChartData(data) {
 
 function getRecruitChart(data, tabValue, chartType, chartAxis) {
   const chartData = getChartData(data, tabValue);
-  const chartConfig = getChartConfig(chartData, chartType, chartAxis);
+  const chartConfig = chartLoader.getChartConfig(chartData, chartType, chartAxis);
 
   return chartConfig;
 }
@@ -162,7 +128,7 @@ export default async function decorate(block) {
   console.log('excelJson await ', excelJson);
 
   mapLoaderInstance = new MapLoader(authorData['map-api-key']);
-  const chartLoader = new ChartLoader();
+  chartLoader = new ChartLoader();
   const sectionOneEle = document.querySelector(`.${parentClass} .dashboard-section-one`);
   const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard-section-two`);
   let cities = [];

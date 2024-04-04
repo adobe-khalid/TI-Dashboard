@@ -9,6 +9,7 @@ let chart2 = {};
 let excelJson = {};
 let skillChartExcelData = [];
 let startupChartExcelData = [];
+let chartLoader;
 const parentClass = 'reskill';
 const authorData = {};
 
@@ -45,41 +46,6 @@ function updateChart(chartInstance, data) {
   chartInstance.data.datasets = data.datasets;
   chartInstance.data.labels = data.labels;
   chartInstance.update();
-}
-
-function getChartConfig(dataObj, chartType = 'line', chartAxis = 'x', legendPos = 'bottom') {
-  const chartConfig = {
-    type: chartType,
-    data: {
-      labels: dataObj.labels,
-      datasets: dataObj.datasets,
-    },
-    options: {
-      maintainAspectRatio: false,
-      indexAxis: chartAxis,
-      plugins: {
-        legend: {
-          position: legendPos,
-          align: 'start',
-          labels: {
-            boxWidth: 10,
-            boxHeight: 10,
-            font: {
-              size: 12,
-            },
-          },
-        },
-      },
-      scales: {
-        minRotation: 90,
-        y: {
-          beginAtZero: false,
-        },
-      },
-    },
-  };
-
-  return chartConfig;
 }
 
 function getChart1Data(data, tabValue, keyToPrint) {
@@ -159,14 +125,14 @@ function getChart2Data(data) {
 
 function getReskillChart(data, tabValue, keyToPrint, chartType = 'line', chartAxis = 'x') {
   const chartData = getChart1Data(data, tabValue, keyToPrint);
-  const chartConfig = getChartConfig(chartData, chartType, chartAxis);
+  const chartConfig = chartLoader.getChartConfig(chartData, chartType, chartAxis);
 
   return chartConfig;
 }
 
 function getStartupChart(data, tabValue, chartType = 'line', chartAxis = 'x') {
   const chartData = getChart2Data(data);
-  const chartConfig = getChartConfig(chartData, chartType, chartAxis, 'top');
+  const chartConfig = chartLoader.getChartConfig(chartData, chartType, chartAxis, 'top');
 
   return chartConfig;
 }
@@ -235,7 +201,7 @@ export default async function decorate(block) {
   // load excel data
   excelJson = await fetchApiResponse(authorData['excel-sheet']);
 
-  const chartLoader = new ChartLoader();
+  chartLoader = new ChartLoader();
   const sectionOneEle = document.querySelector(`.${parentClass} .dashboard-section-one`);
   const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard-section-two`);
   const { leftFilterValue } = getFilterActiveTabs();

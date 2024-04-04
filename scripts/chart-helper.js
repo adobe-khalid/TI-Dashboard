@@ -14,4 +14,40 @@ export default class ChartLoader {
     container.append(canvas);
     return { chart: container, chartInstance };
   }
+
+
+  getChartConfig(dataObj, chartType = 'line', chartAxis = 'x', legendPos = 'bottom') {
+    const chartConfig = {
+      type: chartType,
+      data: {
+        labels: dataObj.labels,
+        datasets: dataObj.datasets,
+      },
+      options: {
+        maintainAspectRatio: false,
+        indexAxis: chartAxis,
+        plugins: {
+          legend: {
+            position: legendPos,
+            align: 'start',
+            labels: {
+              boxWidth: 10,
+              boxHeight: 10,
+              font: {
+                size: 12,
+              },
+            },
+          },
+        },
+        scales: {
+          minRotation: 90,
+          y: {
+            beginAtZero: true,
+          },
+        },
+      },
+    };
+
+    return chartConfig;
+  }
 }
