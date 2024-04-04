@@ -85,7 +85,7 @@
   display: inline-block;
   width: 10px;
   height: 10px;
-  background-image: url(../../icons/arrow-down.svg);
+  background-image: url("../../icons/arrow-down.svg");
 }
 
 .th .table-cell.desc::after {
