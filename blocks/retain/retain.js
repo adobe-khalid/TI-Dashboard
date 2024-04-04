@@ -23,29 +23,39 @@ function removeElementById(id) {
   }
 }
 
+function CreateTableRow(data, parent, orderBy = 'key', order = 'asc') {
+  const sortedEntries = orderBy === 'key'
+    ? Object.entries(data).sort(([keyA], [keyB]) => (order === 'asc' ? keyA.localeCompare(keyB) : keyB.localeCompare(keyA)))
+    : Object.entries(data).sort(([valueA], [valueB]) => (order === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA)));
+  sortedEntries.forEach(([competitor, regions]) => {
+    const row = createElement('div', 'table-row,td');
+    createElement('div', 'table-cell', competitor, row);
+    createElement('div', 'table-cell', regions, row);
+    parent.appendChild(row);
+  });
+}
+
+function tableSort(filterElm, data) {
+  filterElm.addEventListener('click', () => {
+    filterElm.classList.toggle('desc');
+    const parentElm = filterElm.closest('.table-container');
+    parentElm.querySelectorAll('.td').forEach((element) => element.parentNode.removeChild(element));
+    const orderBy = filterElm.classList.contains('key') ? 'key' : 'val';
+    const order = filterElm.classList.contains('desc') ? 'desc' : 'asc';
+    CreateTableRow(data, parentElm, orderBy, order);
+  });
+}
+
 function createTableByArray(data, label) {
   const tableContainer = createElement('div', 'table-container');
   tableContainer.id = label;
-  const headerRow = createElement('div', 'table-row');
-  createElement('div', 'table-cell', 'Company', headerRow);
-  createElement('div', 'table-cell', label, headerRow);
+  const headerRow = createElement('div', 'table-row,th');
+  const filterRowOne = createElement('div', 'table-cell,key', 'Company', headerRow);
+  const filterRowTwo = createElement('div', 'table-cell,value', label, headerRow);
+  tableSort(filterRowOne, data);
+  tableSort(filterRowTwo, data);
   tableContainer.appendChild(headerRow);
-
-  const maxLength = Math.max(...Object.values(data).map((arr) => arr.length));
-  for (let i = 0; i < maxLength; i += 1) {
-    const row = createElement('div', 'table-row');
-    Object.keys(data).forEach((key) => {
-      if (key === 'Competitor' || key === label) {
-        createElement(
-          'div',
-          'table-cell',
-          typeof data[key][i] === 'string' ? data[key][i].replace(',', ' ') : data[key][i] || 'na',
-          row,
-        );
-      }
-    });
-    tableContainer.appendChild(row);
-  }
+  CreateTableRow(data, tableContainer);
   return tableContainer;
 }
 
@@ -82,36 +92,29 @@ async function loadChart(type, datasets) {
   });
 }
 
-function createView(data, label, formatValue, isTalent, classname = '') {
-  const productContainer = document.createElement('div');
-  productContainer.classList.add('product-container');
-  if (classname !== '') {
-    productContainer.classList.add(classname);
-  }
-  productContainer.id = label;
-  const maxLength = Math.max(...Object.values(data).map((arr) => arr.length));
-  for (let i = 0; i < maxLength; i += 1) {
-    const row = document.createElement('div');
-    row.classList.add('product-container-item');
-    Object.keys(data).forEach((key) => {
-      if ((key === 'Competitor' || key === label) && Object.prototype.hasOwnProperty.call(data, key)) {
-        if (data[key][i]) {
-          if (key === 'Competitor') {
-            const logo = document.createElement('img');
-            logo.src = `https://main--ti-dashboard--adobe-khalid.hlx.live/images/${data[key][i].toLowerCase()}-logo.png`;
-            logo.alt = data[key][i];
-            const legendLogo = createElement('div', 'logo', logo, row);
-            if (isTalent) {
-              legendLogo.style.border = `1px solid ${colors[i]}`;
-            }
-          } else {
-            const value = formatValue(data[key][i]);
-            createElement('div', 'products', value, row);
-          }
-        }
-      }
-    });
+function createView(data, classname = '', parent = null, isTalent = false) {
+  const productContainer = createElement('div', classname ? `product-container,${classname}` : 'product-container');
+  Object.entries(data).forEach(([key, item], index) => {
+    const row = createElement('div', 'product-container-item');
+    const logo = createElement('img');
+    logo.src = `https://main--ti-dashboard--adobe-khalid.hlx.live/images/${key.toLowerCase()}-logo.png`;
+    logo.alt = key;
+    const legendLogo = createElement('div', 'logo', logo, row);
+    if (isTalent) {
+      legendLogo.style.border = `1px solid ${colors[index]}`;
+    }
+    row.appendChild(legendLogo);
+    let label = `<p>${item}</p>`;
+    if (classname === 'product-container-atrrition-eng') {
+      label = `<p>${(parseFloat(item) * 100).toFixed(2)}%</p>`;
+    } else if (classname === 'product-container-ai-product') {
+      label = `<p>${item.replaceAll(',', '</p><p>')}</p>`;
+    }
+    createElement('div', 'products', label, row);
     productContainer.appendChild(row);
+  });
+  if (parent) {
+    parent.appendChild(productContainer);
   }
   return productContainer;
 }
@@ -140,15 +143,15 @@ async function loadTalentPool(chartObj) {
   const sectionTwoEle = retainContainer.querySelector(`.${parentClass} .dashboard-section-two`);
 
   const sectionOneLegend = createView(
-    competitorInsights,
-    'Open AI roles',
-    (value) => `<p>${value}</p>`,
+    competitorInsights['Open AI roles'],
+    null,
+    null,
     true,
   );
   const sectionTwoLegend = createView(
-    competitorInsights,
-    'Open AI roles',
-    (value) => `<p>${value}</p>`,
+    competitorInsights['Open AI roles'],
+    null,
+    null,
     true,
   );
   createElement('div', 'retain-legend', sectionOneLegend, sectionOneEle);
@@ -181,7 +184,7 @@ async function loadKeyMetrics() {
     const metricsItem = createElement('div', 'metrics', value, metricsTag);
     if (key === 0 || key === 1) {
       metricsItem.classList.add('selected');
-      const table = createTableByArray(competitorInsights, value);
+      const table = createTableByArray(competitorInsights[value], value);
       metricsVal.appendChild(table);
     }
     metricsItem.addEventListener('click', () => {
@@ -205,31 +208,10 @@ async function loadAttritionComparison() {
 
   const sectionOneEle = retainContainer.querySelector(`.${parentClass} .dashboard-section-one`);
   const sectionTwoEle = retainContainer.querySelector(`.${parentClass} .dashboard-section-two`);
-
-  Object.keys(competitorInsights)
-    .filter((key) => ['Attrition by AI Engineering Function'].includes(key))
-    .forEach((key) => {
-      const attritionElm = createView(
-        competitorInsights,
-        key,
-        (value) => `<p>${(parseFloat(value) * 100).toFixed(2)}%</p>`,
-        false,
-        'product-container-atrrition-eng',
-      );
-      sectionOneEle.appendChild(attritionElm);
-    });
-  Object.keys(competitorInsights)
-    .filter((key) => ['Top AI Products'].includes(key))
-    .forEach((key) => {
-      const aiProductElm = createView(
-        competitorInsights,
-        key,
-        (value) => `<p>${value.replaceAll(',', '</p><p>')}</p>`,
-        false,
-        'product-container-ai-product',
-      );
-      sectionTwoEle.appendChild(aiProductElm);
-    });
+  const attritionEngineering = competitorInsights['Attrition by AI Engineering Function'];
+  const topAIProducts = competitorInsights['Top AI Products'];
+  createView(attritionEngineering, 'product-container-atrrition-eng', sectionOneEle);
+  createView(topAIProducts, 'product-container-ai-product', sectionTwoEle);
 }
 
 function addFilterListener(block, data) {

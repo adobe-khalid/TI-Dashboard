@@ -91,15 +91,14 @@ export const printSectionTemplate = (dataObj, bindOnElement, firstSection = true
   }
 };
 
-export const arrayToObject = (inputArray) => {
+export const arrayToObject = (inputData) => {
   const outputObject = {};
-  inputArray.forEach((item) => {
-    Object.keys(item).forEach((key) => {
-      if (!outputObject[key]) {
-        outputObject[key] = [];
-      }
-      const value = item[key];
-      outputObject[key].push(value !== null ? value : 'na');
+  inputData.forEach(({ Competitor, ...data }) => {
+    Object.entries(data).forEach(([key, value]) => {
+      outputObject[key] = {
+        ...(outputObject[key] || {}),
+        [Competitor]: value,
+      };
     });
   });
   return outputObject;

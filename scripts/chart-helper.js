@@ -15,7 +15,6 @@ export default class ChartLoader {
     return { chart: container, chartInstance };
   }
 
-
   getChartConfig(dataObj, chartType = 'line', chartAxis = 'x', legendPos = 'bottom') {
     const chartConfig = {
       type: chartType,

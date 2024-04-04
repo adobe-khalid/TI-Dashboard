@@ -72,6 +72,26 @@
   border-right: 0;
 }
 
+.th .table-cell {
+  position: relative;
+}
+
+.th .table-cell::after {
+  content: '';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background-image: url(../../icons/arrow-down.svg);
+}
+
+.th .table-cell.desc::after {
+  transform: translateY(-50%) rotate(180deg);
+}
+
 .table-row:first-child .table-cell {
   font-size: var(--body-font-size-s);
   font-weight: bold;
@@ -124,7 +144,7 @@
 }
 
 .retain .product-container-atrrition-eng {
-  max-width: 320px;
+  max-width: 374px;
   margin: 0 auto;
 }
 
