@@ -54,7 +54,16 @@ export const printTitleTemplate = (dataObj, bindOnElement) => {
   }
 
   if (config['btn-info']) {
-    createElement('span', `${parentClass}-btn-info`, 'i', parentEle);
+    const infoBtnEle = createElement('span', `${parentClass}-btn-info`, 'i', parentEle);
+    createElement('span', `${parentClass}-btn-info-text`, config['btn-info'], parentEle);
+
+    infoBtnEle.addEventListener('mouseenter', () => {
+      parentEle.querySelector(`.${parentClass}-btn-info-text`).classList.add('show');
+    });
+
+    infoBtnEle.addEventListener('mouseleave', () => {
+      parentEle.querySelector(`.${parentClass}-btn-info-text`).classList.remove('show');
+    });
   }
 };
 

@@ -22,6 +22,7 @@
   --red-color: #F91101;
   --light-blue-color: #0265DC;
   --white-color: #FFF;
+  --shadow-color: #000;
 
 
   /* fonts */
@@ -283,6 +284,7 @@ main .dashboard {
   align-items: center;
   margin-bottom: 16px;
   column-gap: 8px;
+  position: relative;
 }
 
 .dashboard-title-main {
@@ -304,6 +306,25 @@ main .dashboard {
   width: 20px;
   height: 20px;
   text-align: center;
+}
+
+.dashboard-title-btn-info-text {
+  opacity: 0;
+  display: none;
+  position: absolute;
+  max-width: calc(100% - 32px);
+  margin: 0 auto;
+  background: var(--background-color);
+  border-radius: 10px;
+  box-shadow: 0 0 18px -6px var(--shadow-color);
+  padding: 10px;
+  top: 100%;
+  transition: all 0.25s;
+}
+
+.dashboard-title-btn-info-text.show {
+  display: block;
+  opacity: 1;
 }
 
 /* End - Dashboard title */
