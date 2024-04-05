@@ -193,7 +193,7 @@ async function loadKeyMetrics() {
         removeElementById(value);
       } else {
         metricsItem.classList.add('selected');
-        const table = createTableByArray(competitorInsights, value);
+        const table = createTableByArray(competitorInsights[value], value);
         metricsVal.append(table);
       }
     });
