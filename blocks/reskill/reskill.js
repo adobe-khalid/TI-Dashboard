@@ -132,7 +132,7 @@ function getReskillChart(data, tabValue, keyToPrint, chartType = 'line', chartAx
 
 function getStartupChart(data, tabValue, chartType = 'line', chartAxis = 'x') {
   const chartData = getChart2Data(data);
-  const chartConfig = chartLoader.getChartConfig(chartData, chartType, chartAxis, 'top');
+  const chartConfig = chartLoader.getChartConfig(chartData, chartType, chartAxis, 'top', 0);
 
   return chartConfig;
 }

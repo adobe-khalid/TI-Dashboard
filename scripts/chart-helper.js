@@ -15,7 +15,7 @@ export default class ChartLoader {
     return { chart: container, chartInstance };
   }
 
-  getChartConfig(dataObj, chartType = 'line', chartAxis = 'x', legendPos = 'bottom') {
+  getChartConfig(dataObj, chartType = 'line', chartAxis = 'x', legendPos = 'bottom', xLabelRotation = 90) {
     const displayLegend = !!legendPos;
     const chartConfig = {
       type: chartType,
@@ -41,7 +41,11 @@ export default class ChartLoader {
           },
         },
         scales: {
-          minRotation: 90,
+          x: {
+            ticks: {
+              minRotation: xLabelRotation,
+            },
+          },
           y: {
             beginAtZero: true,
           },
