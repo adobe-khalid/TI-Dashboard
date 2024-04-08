@@ -76,19 +76,19 @@
   position: relative;
 }
 
-.th .table-cell::after {
+.th .table-cell:nth-child(2)::after {
   content: '';
   position: absolute;
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  display: inline-block;
+  display: block;
   width: 10px;
   height: 10px;
   background-image: url("../../icons/arrow-down.svg");
 }
 
-.th .table-cell.desc::after {
+.th .table-cell:nth-child(2).desc::after {
   transform: translateY(-50%) rotate(180deg);
 }
 

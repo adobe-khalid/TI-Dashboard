@@ -26,7 +26,13 @@ function removeElementById(id) {
 function CreateTableRow(data, parent, orderBy = 'key', order = 'asc') {
   const sortedEntries = orderBy === 'key'
     ? Object.entries(data).sort(([keyA], [keyB]) => (order === 'asc' ? keyA.localeCompare(keyB) : keyB.localeCompare(keyA)))
-    : Object.entries(data).sort(([valueA], [valueB]) => (order === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA)));
+    : Object.entries(data).sort(([_, _valueA], [__, _valueB]) => {
+      console.log(_, __);
+      if (!Number.isNaN(Number(_valueA)) && !Number.isNaN(Number(_valueB))) {
+        return order === 'asc' ? Number(_valueA) - Number(_valueB) : Number(_valueB) - Number(_valueA);
+      }
+      return order === 'asc' ? String(_valueA).localeCompare(String(_valueB)) : String(_valueB).localeCompare(String(_valueA));
+    });
   sortedEntries.forEach(([competitor, regions]) => {
     const row = createElement('div', 'table-row,td');
     createElement('div', 'table-cell', competitor, row);
@@ -59,39 +65,6 @@ function createTableByArray(data, label) {
   return tableContainer;
 }
 
-async function loadChart(type, datasets) {
-  return chartLoader.loadChart({
-    type,
-    data: {
-      labels: competitorInsights.Competitor,
-      datasets,
-    },
-    options: {
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false,
-          position: 'bottom',
-          align: 'start',
-          labels: {
-            boxWidth: 10,
-            boxHeight: 10,
-            font: {
-              size: 12,
-            },
-          },
-        },
-      },
-      scales: {
-        minRotation: 90,
-        y: {
-          beginAtZero: true,
-        },
-      },
-    },
-  });
-}
-
 function createView(data, classname = '', parent = null, isTalent = false) {
   const productContainer = createElement('div', classname ? `product-container,${classname}` : 'product-container');
   Object.entries(data).forEach(([key, item], index) => {
@@ -120,15 +93,22 @@ function createView(data, classname = '', parent = null, isTalent = false) {
 }
 
 function prepareChartData(dataArr) {
-  const chartData = [];
-  dataArr.forEach((chartField, key) => {
-    chartData.push({
-      label: chartField,
-      data: competitorInsights[chartField],
-      borderColor: colors[key],
-      backgroundColor: colors[key],
-      barThickness: 5,
-    });
+  const chartData = { labels: dataArr, datasets: [], legend: {} };
+  let count = 0;
+  Object.keys(competitorInsights[dataArr[1]]).forEach((platform) => {
+    if (platform !== 'Adobe') {
+      const data = dataArr.filter((category) => competitorInsights[category][platform] !== '')
+        .map((category) => parseInt(competitorInsights[category][platform], 10));
+      chartData.datasets.push({
+        data,
+        label: platform,
+        borderColor: colors[count],
+        backgroundColor: colors[count],
+        barThickness: 5,
+      });
+      chartData.legend[platform] = data.reduce((sum, item) => sum + item, 0);
+      count += 1;
+    }
   });
   return chartData;
 }
@@ -142,33 +122,26 @@ async function loadTalentPool(chartObj) {
   const sectionOneEle = retainContainer.querySelector(`.${parentClass} .dashboard-section-one`);
   const sectionTwoEle = retainContainer.querySelector(`.${parentClass} .dashboard-section-two`);
 
-  const sectionOneLegend = createView(
-    competitorInsights['Open AI roles'],
-    null,
-    null,
-    true,
-  );
-  const sectionTwoLegend = createView(
-    competitorInsights['Open AI roles'],
-    null,
-    null,
-    true,
-  );
-  createElement('div', 'retain-legend', sectionOneLegend, sectionOneEle);
-  createElement('div', 'retain-legend', sectionTwoLegend, sectionTwoEle);
-
   // Extract chart data
-  const skillDataArr = chartObj['chart-talent-skills-company']?.slice(0, 5) || [];
-  const locationDataArr = chartObj['chart-talent-location-company']?.slice(0, 5) || [];
+  const skillDataArr = chartObj['chart-talent-skills-company'] || [];
+  const locationDataArr = chartObj['chart-talent-location-company'] || [];
 
   // Prepare chart data
   const chartDataSkill = prepareChartData(skillDataArr);
   const chartDataLocation = prepareChartData(locationDataArr);
 
+  const sectionOneLegend = createView(chartDataSkill.legend, null, null, true);
+  const sectionTwoLegend = createView(chartDataLocation.legend, null, null, true);
+  createElement('div', 'retain-legend', sectionOneLegend, sectionOneEle);
+  createElement('div', 'retain-legend', sectionTwoLegend, sectionTwoEle);
+
+  const chartConfig = chartLoader.getChartConfig(chartDataSkill, 'bar', 'x', false);
+  const chartConfigb = chartLoader.getChartConfig(chartDataLocation, 'line', 'x', false);
+
   // Load charts in parallel
   const [skillsElm, locationElm] = await Promise.all([
-    loadChart('bar', chartDataSkill),
-    loadChart('line', chartDataLocation),
+    chartLoader.loadChart(chartConfig),
+    chartLoader.loadChart(chartConfigb),
   ]);
 
   // Append charts to sections

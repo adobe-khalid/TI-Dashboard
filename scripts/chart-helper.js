@@ -16,6 +16,7 @@ export default class ChartLoader {
   }
 
   getChartConfig(dataObj, chartType = 'line', chartAxis = 'x', legendPos = 'bottom') {
+    const displayLegend = !!legendPos;
     const chartConfig = {
       type: chartType,
       data: {
@@ -27,6 +28,7 @@ export default class ChartLoader {
         indexAxis: chartAxis,
         plugins: {
           legend: {
+            display: displayLegend,
             position: legendPos,
             align: 'start',
             labels: {
