@@ -188,7 +188,7 @@ export default class MapLoader {
   async loadMap(col, mapELeId, cities) {
     if (!this.mapLoadedPromise) {
       // Load the Google Maps API script only once
-      this.mapLoadedPromise = loadScript(`https://maps.googleapis.com/maps/api/js?key=${this.apiKey}`);
+      this.mapLoadedPromise = loadScript(`https://maps.googleapis.com/maps/api/js?key=${this.apiKey}`, { async: true, defer: true });
     }
 
     try {

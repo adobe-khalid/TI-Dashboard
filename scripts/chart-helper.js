@@ -5,7 +5,7 @@ import { loadScript } from './aem.js';
 export default class ChartLoader {
   async loadChart(chartConfig) {
     if (!window.Chart) {
-      await loadScript('https://cdn.jsdelivr.net/npm/chart.js');
+      await loadScript('https://cdn.jsdelivr.net/npm/chart.js', { async: true, defer: true });
     }
     const container = document.createElement('div');
     container.classList.add('chart-container');
