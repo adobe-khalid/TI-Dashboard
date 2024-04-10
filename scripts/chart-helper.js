@@ -2,15 +2,15 @@
 /* eslint-disable no-undef */
 import { loadScript } from './aem.js';
 import { isNumber, formatNumber } from './helper.js';
+import { createElement } from './dashboard-template.js';
 
 export default class ChartLoader {
   async loadChart(chartConfig) {
     if (!window.Chart) {
       await loadScript('https://cdn.jsdelivr.net/npm/chart.js', { async: true, defer: true });
     }
-    const container = document.createElement('div');
-    container.classList.add('chart-container');
-    const canvas = document.createElement('canvas');
+    const container = createElement('div', 'chart-container');
+    const canvas = createElement('canvas');
     const chartInstance = new Chart(canvas, chartConfig);
     container.append(canvas);
     return { chart: container, chartInstance };

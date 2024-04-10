@@ -2,6 +2,7 @@
 /* eslint-disable no-new */
 /* eslint-disable no-undef */
 import { loadScript } from './aem.js';
+import { createElement } from './dashboard-template.js';
 
 const silverTheme = [{
   elementType: 'geometry',
@@ -200,9 +201,8 @@ export default class MapLoader {
     }
 
     // Once the script is loaded, initialize the map
-    const container = document.createElement('div');
+    const container = createElement('div', 'map-container');
     container.setAttribute('id', mapELeId);
-    container.setAttribute('class', 'map-container');
     container.style.height = '380px';
     col.appendChild(container);
 
