@@ -15,7 +15,28 @@ export default class ChartLoader {
     return { chart: container, chartInstance };
   }
 
+  isNumber(value) {
+    // Remove commas from the value
+    const valueWithoutCommas = value.replace(/,/g, '');
+    // Check if the value is a valid number
+    return !Number.isNaN(parseFloat(valueWithoutCommas))
+            && Number.isFinite(parseFloat(valueWithoutCommas));
+  }
+
+  formatNumber(value) {
+    const numberValue = value.replace(/,/g, '');
+    if (numberValue >= 1000000000) {
+      return `${(numberValue / 1000000000).toFixed(1)}b`;
+    } if (numberValue >= 1000000) {
+      return `${(numberValue / 1000000).toFixed(1)}m`;
+    } if (numberValue >= 1000) {
+      return `${(numberValue / 1000).toFixed(1)}k`;
+    }
+    return numberValue;
+  }
+
   getChartConfig(dataObj, chartType = 'line', chartAxis = 'x', legendPos = 'bottom', xLabelRotation = 90) {
+    const chartClass = this;
     const displayLegend = !!legendPos;
     const chartConfig = {
       type: chartType,
@@ -44,6 +65,20 @@ export default class ChartLoader {
           x: {
             ticks: {
               minRotation: xLabelRotation,
+              callback(value) {
+                const valueLegend = this.getLabelForValue(value);
+                let finalLegendValue = valueLegend;
+
+                if (chartClass.isNumber(finalLegendValue)) {
+                  finalLegendValue = chartClass.formatNumber(finalLegendValue);
+                } else {
+                  if (finalLegendValue.length > 10) {
+                    finalLegendValue = `${finalLegendValue.substr(0, 10)}....`;
+                  }
+                  console.log('call back value ', finalLegendValue);
+                }
+                return finalLegendValue;
+              },
             },
           },
           y: {
