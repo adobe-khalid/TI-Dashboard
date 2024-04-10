@@ -7,12 +7,13 @@ import {
   arrayToObject,
   createElement,
 } from '../../scripts/dashboard-template.js';
+import { getAuthorData } from '../../scripts/helper.js';
 
 let chartLoader;
 let excelJson = {};
 let competitorInsights = [];
 const parentClass = 'retain';
-const authorData = {};
+let authorData = {};
 const retainContainer = createElement('div', 'retain-container');
 const colors = ['#FF9900', '#34A354', '#F35325', '#0967DF', '#206EBA', '#00A1E1'];
 
@@ -205,20 +206,7 @@ function addFilterListener(block, data) {
 }
 
 export default async function decorate(block) {
-  block.childNodes.forEach((child) => {
-    if (child.nodeType === 1) {
-      const objText = 'obj';
-      let firstDivText = child.children[0].textContent.trim();
-      let secondDivText = child.children[1].textContent.trim();
-
-      if (firstDivText.indexOf(objText) >= 0) {
-        firstDivText = firstDivText.replace(objText, '').trim();
-        secondDivText = secondDivText.split(',');
-      }
-
-      authorData[firstDivText] = secondDivText;
-    }
-  });
+  authorData = getAuthorData(block);
 
   block.innerHTML = '';
   printTitleTemplate(authorData, block);

@@ -4,6 +4,7 @@ import MapLoader from '../../scripts/map-helper.js';
 import ChartLoader from '../../scripts/chart-helper.js';
 import { fetchApiResponse } from '../../scripts/aem.js';
 import { printTitleTemplate, printFilterTabsTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
+import { getAuthorData } from '../../scripts/helper.js';
 
 let chart1 = {};
 let excelJson = {};
@@ -11,7 +12,7 @@ let excelColumn = [];
 let mapLoaderInstance = {};
 let chartLoader;
 const parentClass = 'recruit';
-const authorData = {};
+let authorData = {};
 
 function updateChart(chartInstance, data) {
   chartInstance.data.datasets = data.datasets;
@@ -80,35 +81,12 @@ function addFilterListener(block) {
       updateChart(chart1.chartInstance, getChartData(data));
       // update map
       mapLoaderInstance.updateCities(cities);
-      // .then(() => {
-      //   console.log('Map updated successfully!');
-      //   // Any further actions after map is updated
-      // })
-      // .catch((error) => {
-      //   console.error('Error updating map:', error);
-      // });
     });
   });
 }
 
 export default async function decorate(block) {
-  // iterate over children and get all authoring data
-  block.childNodes.forEach((child) => {
-    if (child.nodeType === 1) {
-      const objText = 'obj';
-      let firstDivText = child.children[0].textContent.trim();
-      let secondDivText = child.children[1].textContent.trim();
-
-      if (firstDivText.indexOf(objText) >= 0) {
-        firstDivText = firstDivText.replace(objText, '').trim();
-        secondDivText = secondDivText.split(',');
-      }
-
-      authorData[firstDivText] = secondDivText;
-    }
-  });
-
-  console.log('authorData ', authorData);
+  authorData = getAuthorData(block);
 
   block.innerHTML = '';
   // print title
@@ -141,11 +119,4 @@ export default async function decorate(block) {
 
   // load google map
   mapLoaderInstance.loadMap(sectionTwoEle, 'recruitMap', cities);
-  // .then(() => {
-  //   console.log('Map loaded successfully!');
-  //   // Any further actions after map is loaded
-  // })
-  // .catch((error) => {
-  //   console.error('Error loading map:', error);
-  // });
 }

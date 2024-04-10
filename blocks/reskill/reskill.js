@@ -3,6 +3,7 @@
 import ChartLoader from '../../scripts/chart-helper.js';
 import { fetchApiResponse } from '../../scripts/aem.js';
 import { printTitleTemplate, printFilterTabsTemplate, printSectionTemplate } from '../../scripts/dashboard-template.js';
+import { getAuthorData, abbrevToNumber, getLastValueFromRange } from '../../scripts/helper.js';
 
 let chart1 = {};
 let chart2 = {};
@@ -11,36 +12,7 @@ let skillChartExcelData = [];
 let startupChartExcelData = [];
 let chartLoader;
 const parentClass = 'reskill';
-const authorData = {};
-
-function abbrevToNumber(abbrev) {
-  // Define mapping of abbreviations to multipliers
-  const abbreviations = {
-    k: 1000,
-    m: 1000000,
-    b: 1000000000,
-  };
-
-  // Extract numeric value and abbreviation from the input string
-  const matches = abbrev.match(/^([\d.]+)([kmb])?$/i);
-  if (!matches) {
-    throw new Error('Invalid abbreviation format');
-  }
-
-  // Convert numeric value to a number
-  const numericValue = parseFloat(matches[1]);
-
-  // Multiply by the corresponding multiplier if an abbreviation is provided
-  if (matches[2]) {
-    const multiplier = abbreviations[matches[2].toLowerCase()];
-    if (!multiplier) {
-      throw new Error('Invalid abbreviation');
-    }
-    return numericValue * multiplier;
-  }
-
-  return numericValue;
-}
+let authorData = {};
 
 function updateChart(chartInstance, data) {
   chartInstance.data.datasets = data.datasets;
@@ -87,14 +59,6 @@ function getChart1Data(data, tabValue, keyToPrint) {
   });
 
   return { labels, datasets };
-}
-
-function getLastValueFromRange(value) {
-  const computedValue = value || '0';
-  const parts = computedValue.replace('$', '').split('—');
-  const afterDash = parts[parts.length - 1];
-
-  return afterDash;
 }
 
 function getChart2Data(data) {
@@ -170,21 +134,7 @@ function addFilterListener(block) {
 }
 
 export default async function decorate(block) {
-  // iterate over children and get all authoring data
-  block.childNodes.forEach((child) => {
-    if (child.nodeType === 1) {
-      const objText = 'obj';
-      let firstDivText = child.children[0].textContent.trim();
-      let secondDivText = child.children[1].textContent.trim();
-
-      if (firstDivText.indexOf(objText) >= 0) {
-        firstDivText = firstDivText.replace(objText, '').trim();
-        secondDivText = secondDivText.split(',');
-      }
-
-      authorData[firstDivText] = secondDivText;
-    }
-  });
+  authorData = getAuthorData(block);
 
   block.innerHTML = '';
   // print title
