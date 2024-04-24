@@ -1,6 +1,6 @@
 .retain {
   padding: 16px 16px 32px;
-  background-color: #ededed;
+  background-color: var(--dark-color);
 }
 
 .retain-container {
@@ -23,10 +23,10 @@
 }
 
 .metrics {
-  border: #d5d5d5 solid 2px;
+  border: var(--border-color) solid 2px;
   padding: 8px 16px 8px 12px;
   border-radius: 16px;
-  font-size: 12px;
+  font-size: var(--body-font-size-xs);
   letter-spacing: 0;
   color: var(--shadow-color);
   cursor: pointer;
@@ -34,14 +34,14 @@
 }
 
 .metrics.selected {
-  background: #0165dc;
+  background: var(--light-blue-color);
   color: var(--white-color);
 }
 
 .metrics.selected::after {
   padding-left: 8px;
   content: "\00d7";
-  font-size: 14px;
+  font-size: var(--body-font-size-s);
 }
 
 /* Metrics Table Section */
@@ -56,12 +56,12 @@
 }
 
 .table-row:first-child {
-  background: #d5d5d5;
+  background: var(--border-color);
 }
 
 .table-cell {
-  border-bottom: 1px solid #d5d5d5;
-  border-right: 1px solid #d5d5d5;
+  border-bottom: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
   display: table-cell;
   width: 50%;
   font-size: var(--body-font-size-s);
@@ -85,7 +85,7 @@
   display: block;
   width: 10px;
   height: 10px;
-  background-image: url("../../icons/arrow-down.svg");
+  background-image: url('../../icons/arrow-down.svg');
 }
 
 .th .table-cell:nth-child(2).desc::after {
@@ -113,17 +113,19 @@
   min-height: 44px;
   min-width: 44px;
   max-width: 48px;
-  border: 2px #d5d5d5 solid;
+  border: 2px var(--border-color) solid;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 4px 0;
+  cursor: pointer;
 }
 
 .product-container-item .logo img {
   max-width: 32px;
   max-height: 32px;
+  pointer-events: none;
 }
 
 .product-container-item .products {
@@ -132,10 +134,10 @@
 }
 
 .product-container-item .products p {
-  padding: 8px;
-  margin: 0 0 0 8px;
-  background: #f8f8f8;
-  font-size: var(--body-font-size-xs);
+  padding: 0;
+  margin: 0;
+  color: var(--text-color);
+  font-size: var(--body-font-size-m);
   font-weight: bold;
 }
 
@@ -160,13 +162,13 @@
   width: 100%;
 }
 
-.dashboard-section-one .product-container-item .products p {
-  padding: 0;
-  margin: 0;
+
+.product-container-ai-product .product-container-item .products p {
+  padding: 8px;
+  margin: 0 0 0 8px;
   background: transparent;
-  color: #222;
-  font-size: var(--body-font-size-m);
-  font-weight: bold;
+  background: var(--light-color);
+  font-size: var(--body-font-size-xs);
 }
 
 /* End - Attrition Section */

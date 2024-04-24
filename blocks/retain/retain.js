@@ -7,7 +7,7 @@ import {
   arrayToObject,
   createElement,
 } from '../../scripts/dashboard-template.js';
-import { getAuthorData } from '../../scripts/helper.js';
+import { getAuthorData, removeElementById } from '../../scripts/helper.js';
 
 let chartLoader;
 let excelJson = {};
@@ -16,13 +16,6 @@ const parentClass = 'retain';
 let authorData = {};
 const retainContainer = createElement('div', 'retain-container');
 const colors = ['#FF9900', '#34A354', '#F35325', '#0967DF', '#206EBA', '#00A1E1'];
-
-function removeElementById(id) {
-  const element = document.getElementById(id);
-  if (element) {
-    element.parentNode.removeChild(element);
-  }
-}
 
 function CreateTableRow(data, parent, orderBy = 'key', order = 'asc') {
   const sortedEntries = orderBy === 'key'
@@ -76,6 +69,8 @@ function createView(data, classname = '', parent = null, isTalent = false) {
     const legendLogo = createElement('div', 'logo', logo, row);
     if (isTalent) {
       legendLogo.style.border = `1px solid ${colors[index]}`;
+      legendLogo.id = key;
+      legendLogo.setAttribute('data-index', index);
     }
     row.appendChild(legendLogo);
     let label = `<p>${item}</p>`;
@@ -91,6 +86,18 @@ function createView(data, classname = '', parent = null, isTalent = false) {
     parent.appendChild(productContainer);
   }
   return productContainer;
+}
+
+function addListenerForLegend(chartInstance, section) {
+  const legendLogo = section.querySelector('.retain-legend .product-container');
+  legendLogo.addEventListener('click', ({ target }) => {
+    if (target && target.classList.contains('logo')) {
+      const index = parseInt(target.getAttribute('data-index'), 10);
+      const meta = chartInstance.getDatasetMeta(index);
+      meta.hidden = meta.hidden === null ? !chartInstance.data.datasets[index].hidden : null;
+      chartInstance.update();
+    }
+  });
 }
 
 function prepareChartData(dataArr) {
@@ -144,10 +151,12 @@ async function loadTalentPool(chartObj) {
     chartLoader.loadChart(chartConfig),
     chartLoader.loadChart(chartConfigb),
   ]);
-
   // Append charts to sections
   sectionOneEle.appendChild(skillsElm.chart);
   sectionTwoEle.appendChild(locationElm.chart);
+
+  addListenerForLegend(skillsElm.chartInstance, sectionOneEle);
+  addListenerForLegend(locationElm.chartInstance, sectionTwoEle);
 }
 
 async function loadKeyMetrics() {
@@ -214,6 +223,8 @@ export default async function decorate(block) {
   printFilterTabsTemplate(authorData['filter-left'], null, block);
 
   block.appendChild(retainContainer);
+  // filter listerners like click
+  addFilterListener(block, authorData);
 
   // load excel data
   excelJson = await fetchApiResponse(authorData['excel-sheet']);
@@ -225,5 +236,4 @@ export default async function decorate(block) {
     competitorInsights = arrayToObject(excelJson[authorData['sheet-name']].data);
     loadTalentPool(authorData);
   }
-  addFilterListener(block, authorData);
 }
