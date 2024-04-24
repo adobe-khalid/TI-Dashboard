@@ -62,9 +62,9 @@ function getRecruitChart(data, tabValue, chartType, chartAxis) {
   return chartConfig;
 }
 
-function getFilterActiveTabs() {
-  const leftFilterValue = document.querySelector('.dashboard-filter-left button.active')?.innerText || '';
-  const rightFilterValue = document.querySelector('.dashboard-filter-right button.active')?.innerText || '';
+function getFilterActiveTabs(parentEleClass) {
+  const leftFilterValue = document.querySelector(`.${parentEleClass} .dashboard-filter-left button.active`)?.innerText || '';
+  const rightFilterValue = document.querySelector(`.${parentEleClass} .dashboard-filter-right button.active`)?.innerText || '';
 
   return { leftFilterValue, rightFilterValue };
 }
@@ -74,7 +74,7 @@ function addFilterListener(block) {
   const filterList = block.querySelectorAll(`.${parentClass} .${filterClass} button`);
   filterList.forEach((filterItem) => {
     filterItem.addEventListener('click', () => {
-      const { leftFilterValue, rightFilterValue } = getFilterActiveTabs();
+      const { leftFilterValue, rightFilterValue } = getFilterActiveTabs(parentClass);
       const data = excelJson[`${leftFilterValue}-${rightFilterValue}`]?.data;
       const cities = data.map((v) => v.Location);
       // update chart
@@ -110,7 +110,7 @@ export default async function decorate(block) {
   const sectionOneEle = document.querySelector(`.${parentClass} .dashboard-section-one`);
   const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard-section-two`);
   let cities = [];
-  const { leftFilterValue, rightFilterValue } = getFilterActiveTabs();
+  const { leftFilterValue, rightFilterValue } = getFilterActiveTabs(parentClass);
 
   excelColumn = excelJson[`${leftFilterValue}-${rightFilterValue}`]?.data;
   cities = excelColumn.map((v) => v.Location);

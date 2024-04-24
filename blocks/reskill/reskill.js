@@ -101,9 +101,9 @@ function getStartupChart(data, tabValue, chartType = 'line', chartAxis = 'x') {
   return chartConfig;
 }
 
-function getFilterActiveTabs() {
-  const leftFilterValue = document.querySelector('.dashboard-filter-left button.active')?.innerText || '';
-  const rightFilterValue = document.querySelector('.dashboard-filter-right button.active')?.innerText || '';
+function getFilterActiveTabs(parentEleClass) {
+  const leftFilterValue = document.querySelector(`.${parentEleClass} .dashboard-filter-left button.active`)?.innerText || '';
+  const rightFilterValue = document.querySelector(`.${parentEleClass} .dashboard-filter-right button.active`)?.innerText || '';
 
   return { leftFilterValue, rightFilterValue };
 }
@@ -154,7 +154,7 @@ export default async function decorate(block) {
   chartLoader = new ChartLoader();
   const sectionOneEle = document.querySelector(`.${parentClass} .dashboard-section-one`);
   const sectionTwoEle = document.querySelector(`.${parentClass} .dashboard-section-two`);
-  const { leftFilterValue } = getFilterActiveTabs();
+  const { leftFilterValue } = getFilterActiveTabs(parentClass);
 
   // pick data from  excel tab 'Gen AI Emerging skills 2024'
   skillChartExcelData = excelJson[authorData['chart-skill-sheet-name']]?.data;
